@@ -79,7 +79,7 @@ const moveToTop = (index: number) => {
         <q-btn flat @click="() => openCard(data)">Open</q-btn>
 
         <q-btn flat @click="moveToTop(i)">
-          <q-rating v-model="data.ratingModel" size="1em" :max="1" color="yellow" class="rating">
+          <q-rating v-model="ratingModel" size="1em" :max="1" color="yellow" class="rating">
             <template v-slot:tip-1>
               <q-tooltip>고정!</q-tooltip>
             </template>

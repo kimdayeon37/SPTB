@@ -73,32 +73,34 @@ const moveToTop = (index: number) => {
 </script>
 
 <template>
-  <div v-for="(data, i) in savedData" :key="i" v-if="savedData && savedData.length > 0">
-    <q-card class="my-card bg-primary text-white">
-      <q-card-section>
-        <div class="text-h6">{{ data.protocol }}</div>
-        <div class="text-subtitle2">[Slave ID] {{ data.slaveId }}</div>
-        <div class="text-subtitle2">[ComPort] {{ data.comPort }}</div>
-        <div class="text-subtitle2">[Baudrate] {{ data.baudrate }}</div>
-        <div class="text-subtitle2">[Data Bit] {{ data.dataBit }}</div>
-        <div class="text-subtitle2">[Stop Bit] {{ data.stopBit }}</div>
-        <div class="text-subtitle2">[Parity] {{ data.parity }}</div>
-      </q-card-section>
+  <template v-if="savedData && savedData.length > 0">
+    <div v-for="(data, i) in savedData" :key="i">
+      <q-card class="my-card bg-primary text-white">
+        <q-card-section>
+          <div class="text-h6">{{ data.protocol }}</div>
+          <div class="text-subtitle2">[Slave ID] {{ data.slaveId }}</div>
+          <div class="text-subtitle2">[ComPort] {{ data.comPort }}</div>
+          <div class="text-subtitle2">[Baudrate] {{ data.baudrate }}</div>
+          <div class="text-subtitle2">[Data Bit] {{ data.dataBit }}</div>
+          <div class="text-subtitle2">[Stop Bit] {{ data.stopBit }}</div>
+          <div class="text-subtitle2">[Parity] {{ data.parity }}</div>
+        </q-card-section>
 
-      <q-separator dark />
+        <q-separator dark />
 
-      <q-card-actions>
-        <q-btn flat @click="deleteCard(i)">Delete</q-btn>
-        <q-btn flat @click="() => openCard(data)">Open</q-btn>
+        <q-card-actions>
+          <q-btn flat @click="deleteCard(i)">Delete</q-btn>
+          <q-btn flat @click="() => openCard(data)">Open</q-btn>
 
-        <q-btn flat @click="moveToTop(i)">
-          <q-rating v-model="data.ratingModel" size="1em" :max="1" color="yellow" class="rating">
-            <template v-slot:tip-1>
-              <q-tooltip>고정!</q-tooltip>
-            </template>
-          </q-rating>
-        </q-btn>
-      </q-card-actions>
-    </q-card>
-  </div>
+          <q-btn flat @click="moveToTop(i)">
+            <q-rating v-model="ratingModel" size="1em" :max="1" color="yellow" class="rating">
+              <template v-slot:tip-1>
+                <q-tooltip>고정!</q-tooltip>
+              </template>
+            </q-rating>
+          </q-btn>
+        </q-card-actions>
+      </q-card>
+    </div>
+  </template>
 </template>
