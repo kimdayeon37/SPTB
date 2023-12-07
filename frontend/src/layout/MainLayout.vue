@@ -30,12 +30,13 @@ const logoutUser = () => {
 const isUserLogin = () => {
   return userStore.isLogin()
 }
-
+const isShowExpiredDialog = ref(false)
 const { aliveTime } = useSseServerTime()
 
 watch(aliveTime, (newVal) => {
   if (newVal) {
-    if (newVal <= 10) {
+    if (newVal <= 10 && !isShowExpiredDialog.value) {
+      isShowExpiredDialog.value = true
       $q.dialog({
         title: `로그인이 ${newVal}초 후 만료됩니다. 연장하시겠습니까?`,
         message: 'CANCEL을 누르면 로그아웃 됩니다.',
@@ -45,6 +46,7 @@ watch(aliveTime, (newVal) => {
         .onOk(async () => {
           isUserLogin()
           await refreshProc()
+           isShowExpiredDialog.value = false
         })
         .onCancel(() => {
           logoutUser()
