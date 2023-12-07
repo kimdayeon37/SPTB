@@ -4,7 +4,7 @@ import SystemLog from '../components/System-Log.vue'
 import { useToggleStore } from '../store/modules/settingtoggle'
 import { useUserStore } from '../store/userStore'
 import { useRouter } from 'vue-router'
-import {useSseServerTime} from '@/utils/useSse'
+import { useSseServerTime } from '@/utils/useSse'
 import { useQuasar } from 'quasar'
 import { refreshProc } from '@/utils/api_auth'
 

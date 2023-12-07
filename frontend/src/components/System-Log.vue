@@ -44,26 +44,28 @@ const columns: QTableProps['columns'] = [
   },
 ]
 
-watch(()=>idStore.clientId,()=>{
-  const clientId = idStore.clientId
-  console.log(clientId)
-  console.log("sys sse connected")
-  if(clientId.length>0){
-    const eventSource = new EventSource('/api/sse/system?clientId=' + clientId) // 서버 SSE 엔드포인트 주소
+watch(
+  () => idStore.clientId,
+  () => {
+    const clientId = idStore.clientId
+    console.log(clientId)
+    console.log('sys sse connected')
+    if (clientId.length > 0) {
+      const eventSource = new EventSource('/api/sse/system?clientId=' + clientId) // 서버 SSE 엔드포인트 주소
 
-    eventSource.addEventListener('message', (event) => {
-      const data = JSON.parse(event.data)
-      logs.value.unshift({
-        time: data.time,
-        type: data.type,
-        content: data.content,
+      eventSource.addEventListener('message', (event) => {
+        const data = JSON.parse(event.data)
+        logs.value.unshift({
+          time: data.time,
+          type: data.type,
+          content: data.content,
+        })
       })
-    })
+    } else {
+      console.log('No clientId ')
+    }
   }
-  else{
-    console.log("No clientId ")
-  }
-})
+)
 </script>
 <template>
   <div class="col table-container">

@@ -1,50 +1,50 @@
-import { jwtDecode } from 'jwt-decode';
-import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+import { jwtDecode } from 'jwt-decode'
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 
 interface IPayload {
   iat: number
   exp: number
 }
 
+export const useUserStore = defineStore(
+  'login',
+  () => {
+    const id = ref<string>()
+    const token = ref<string>()
+    const decoded = computed(() => (token.value ? jwtDecode<IPayload>(token.value) : undefined))
 
-export const useUserStore = defineStore('login', () => {
-  const id = ref<string>();
-  const token = ref<string>();
-  const decoded = computed(() => (token.value ? jwtDecode<IPayload>(token.value) : undefined))
+    const isLogin = () => {
+      return id.value !== undefined
+    }
 
+    const setUsername = (newId: string) => {
+      id.value = newId
+    }
 
-  const isLogin = () => {
-    return id.value !== undefined;
-  }
+    const clearUsername = () => {
+      id.value = undefined
+      token.value = undefined
+      localStorage.removeItem('login')
+    }
 
-  const setUsername = (newId: string) => {
-    id.value = newId;
-  }
+    const setToken = (newToken: string) => {
+      token.value = newToken
+    }
 
-  const clearUsername = () => {
-    id.value = '';
-    token.value = '';
-    localStorage.removeItem('login');
-  }
-
-  const setToken = (newToken: string) => {
-    token.value = newToken;
-  }
-
-  return {
-    id,
-    token,
-    decoded,
-    isLogin,
-    setUsername,
-    clearUsername,
-    setToken,
-  }
-},
+    return {
+      id,
+      token,
+      decoded,
+      isLogin,
+      setUsername,
+      clearUsername,
+      setToken,
+    }
+  },
   {
     persist: {
       storage: sessionStorage,
     },
   }
-);
+)

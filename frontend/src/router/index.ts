@@ -15,9 +15,9 @@ router.beforeEach(async (to, from, next) => {
 
   guardArr.push(simulatorHandler)
   if (!to.path.toLowerCase().startsWith('/login')) {
-    guardArr.push(loginExistHandler);
-   } 
-  
+    guardArr.push(loginExistHandler)
+  }
+
   let flag = true
   for (const guard of guardArr) {
     if (!(await guard(to, from, next))) {
