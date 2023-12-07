@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import SystemLog from '../components/System-Log.vue'
 import { useToggleStore } from '../store/modules/settingtoggle'
 import { useUserStore } from '../store/userStore'
 import { useRouter } from 'vue-router'
+import { jwtDecode } from 'jwt-decode'
+import { $axios } from '@/axios/index';
+import { useQuasar } from 'quasar'
 
 const leftDrawerOpen = ref(false)
 const toggleLeftDrawer = () => {
@@ -17,14 +20,67 @@ toggleStore.toggle()
 
 const router = useRouter()
 const userStore = useUserStore()
-const logoutUser = () => {
-  userStore.clearUsername()
-  router.push({ path: '/Login' })
-}
+const $q = useQuasar()
+
 
 const isUserLogin = () => {
   return userStore.isLogin()
 }
+const logoutUser = () => {
+    userStore.clearUsername();
+    router.push({ path: '/Login' });
+}
+
+interface IPayload {
+            iat: number
+            exp: number
+        }
+
+watch(()=>userStore.token,()=> {
+    if (userStore.token) {
+    const decoded = jwtDecode<IPayload>(userStore.token);
+        if (decoded) {
+            const expirationTime = decoded.exp;
+
+            if (expirationTime) {
+                const expirationDate = new Date(expirationTime * 1000); 
+                const notificationTime = new Date(expirationTime * 1000 - (10 * 1000)); 
+                const currentTime = new Date();
+
+                console.log('Token expiration time:', expirationDate);
+                console.log('Notification time:', notificationTime);
+                console.log('Current time:', currentTime);
+                const secondsUntilExpiration = Math.floor((expirationDate.getTime() - notificationTime.getTime()) / 1000);
+                const showDialog = () => {
+                    
+                    console.log('Seconds until expiration:', secondsUntilExpiration);
+                    $q.dialog({
+                        title: `로그인이 ${secondsUntilExpiration}초 후 만료됩니다. 연장하시겠습니까?`,
+                        message: 'CANCEL을 누르면 로그아웃 됩니다.',
+                        cancel: true,
+                        persistent: true
+                    }).onOk(async () => {
+                        isUserLogin();
+                        console.log(userStore.token)
+                        const axiosResponse = await $axios().post("/api/regenToken", { id: userStore.id });
+                        const regenToken = axiosResponse.data.token;
+                        console.log(regenToken)
+                        userStore.setToken(regenToken);
+                        setTimeout(showDialog, notificationTime.getTime() - currentTime.getTime());
+                    }).onCancel(() => {
+                        logoutUser();
+                    }).onDismiss(() => {
+                    })
+                }
+                setTimeout(showDialog, notificationTime.getTime() - currentTime.getTime());
+            } else {
+                console.error('Token does not contain an expiration time (exp).');
+            }
+        } else {
+            console.error('Failed to decode the token.');
+        }
+    }
+})
 </script>
 <template>
   <q-layout view="hHh lpR fFf">
@@ -46,12 +102,15 @@ const isUserLogin = () => {
 
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered class="sidebar" :width="220">
       <q-list>
+        <template v-if="!isUserLogin()">
         <q-item to="/Login" clickable v-ripple>
           <q-item-section avatar>
             <q-icon name="login" />
           </q-item-section>
           <q-item-section> Log In </q-item-section>
         </q-item>
+      </template>
+        <template v-if="isUserLogin()">
         <q-item to="/Home" clickable v-ripple>
           <q-item-section avatar>
             <q-icon name="home" />
@@ -72,6 +131,7 @@ const isUserLogin = () => {
           <q-item to="/OPCUA/Client"><q-item-section>Client</q-item-section></q-item>
           <q-item to="/OPCUA/Server"><q-item-section>Server</q-item-section></q-item>
         </q-expansion-item>
+      </template>
       </q-list>
     </q-drawer>
 

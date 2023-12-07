@@ -2,11 +2,11 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export const useUserStore = defineStore('login', () => {
-  const id = ref('');
-  const token = ref('');
+  const id = ref<string>();
+  const token = ref<string>();
 
   const isLogin = () => {
-    return id.value !== '';
+    return id.value !== undefined;
   }
 
   const setUsername = (newId: string) => {
@@ -14,9 +14,8 @@ export const useUserStore = defineStore('login', () => {
   }
 
   const clearUsername = () => {
-    id.value = '';
-    token.value = '';
-    localStorage.removeItem('login');
+    id.value = undefined;
+    token.value = undefined;
   }
 
   const setToken = (newToken: string) => {
