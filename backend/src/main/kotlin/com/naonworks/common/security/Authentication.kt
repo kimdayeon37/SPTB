@@ -16,18 +16,39 @@ import reactor.core.publisher.Mono
 // request 에서 헤더에서 토큰 추출
 @Component
 class JwtServerAuthenticationConverter : ServerAuthenticationConverter {
-//    override fun convert(exchange: ServerWebExchange?): Mono<Authentication> {
-//        return Mono.justOrEmpty(exchange?.request?.headers?.getFirst(HttpHeaders.AUTHORIZATION))
-//            .filter { it.startsWith("Bearer ") }.map { it.substring((7)) }.map { jwt -> BearerToken(jwt) }
-//    }
+    private val log = org.slf4j.LoggerFactory.getLogger(this::class.java)
 
+    //    override fun convert(exchange: ServerWebExchange?): Mono<Authentication> = mono {
+//        exchange ?: return@mono null
+//
+////        val bearerToken = exchange.request.headers.getFirst(HttpHeaders.AUTHORIZATION) ?: return@mono null
+//        val bearerToken = exchange.request.headers.getFirst(HttpHeaders.AUTHORIZATION)
+//                ?: exchange.request.queryParams.getFirst("authorization")
+//
+//        if (bearerToken == null) {
+//            return@mono null
+//        }
+//        else{
+//            log.info(bearerToken)
+//            if (!bearerToken.startsWith("Bearer "))
+//                return@mono null
+//            // ip랑 useragent 가져와서 토큰에 저장
+//            val token = bearerToken.substring(7)
+//
+//            return@mono BearerToken(token)
+//        }
+//    }
     override fun convert(exchange: ServerWebExchange?): Mono<Authentication> = mono {
         exchange ?: return@mono null
 
-        val bearerToken = exchange.request.headers.getFirst(HttpHeaders.AUTHORIZATION) ?: return@mono null
-
-        if (!bearerToken.startsWith("Bearer "))
-            return@mono null
+        var bearerToken = exchange.request.headers.getFirst(HttpHeaders.AUTHORIZATION)
+                ?: exchange.request.queryParams.getFirst("authorization")
+        if (bearerToken == null) return@mono null
+        if (!bearerToken.startsWith("Bearer ")) {
+            log.info(bearerToken)
+            bearerToken = exchange.request.queryParams.getFirst("authorization") ?: return@mono null
+        }
+        log.info(bearerToken)
         // ip랑 useragent 가져와서 토큰에 저장
         val token = bearerToken.substring(7)
 
@@ -37,9 +58,9 @@ class JwtServerAuthenticationConverter : ServerAuthenticationConverter {
 
 @Component
 class JwtAuthenticationManager(
-    private val jwtSupport: JwtSupport,
+        private val jwtSupport: JwtSupport,
 //    private val users: UserDetailsService,
-    private val users: ReactiveUserDetailsService,
+        private val users: ReactiveUserDetailsService,
 ) : ReactiveAuthenticationManager {
 
     // 인증

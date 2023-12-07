@@ -41,11 +41,11 @@ class SecurityConfig {
                             .authenticated()
                             .pathMatchers("/api/regenToken")
                             .authenticated()
-                            // .pathMatchers("/Login").permitAll() // 모든 사용자에게 허용
+
                             //                    .pathMatchers("/api/**").authenticated() // USER
                             // 권한이 있는 사용자만 허용
                             .pathMatchers("/api/sse/**")
-                            .permitAll() // 모든 사용자에게 허용
+                            .authenticated() // 모든 사용자에게 허용
                             .anyExchange()
                             .authenticated() // 다른 모든 엔드포인트에 대해 인증 필요
                 }
@@ -53,7 +53,7 @@ class SecurityConfig {
                 .csrf { it.disable() }
                 .formLogin { formLogin ->
                     formLogin.disable()
-                    // formLogin.loginPage("/Login")
+//                     formLogin.loginPage("/Login")
                 }
                 .httpBasic { it.disable() } // HTTP 기본 인증 사용 X
 
