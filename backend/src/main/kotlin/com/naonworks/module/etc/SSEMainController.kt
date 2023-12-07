@@ -24,7 +24,5 @@ class SSEMainController {
 
     @Operation(summary = "server time")
     @GetMapping(path = ["/server-time"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
-    suspend fun serverTime(): Flow<Long> {
-        return serverTimeSinks.asFlux().asFlow()
-    }
+    suspend fun serverTime(): Flow<Long> = serverTimeSinks.asFlux().asFlow()
 }
