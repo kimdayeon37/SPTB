@@ -14,7 +14,7 @@ const idStore = useIdStore()
 
 onUnmounted(() => {
   if (stateStore.state)
-  $axios()
+    $axios()
       .post('/api/exit', {
         id: idStore.clientId,
       })
