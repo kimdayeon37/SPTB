@@ -1,15 +1,9 @@
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-export const useIdStore = defineStore('clientId', {
-  state: () => ({
-    clientId: '',
-  }),
-  actions: {
-    set(newId: string) {
-      this.clientId = newId
-    },
-    get() {
-      return this.clientId
-    },
-  },
+export const useIdStore = defineStore('clientId', () => {
+  const clientId = ref<string>('')
+  return {
+    clientId,
+  }
 })

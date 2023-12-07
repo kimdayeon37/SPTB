@@ -6,6 +6,9 @@ const emits = defineEmits<{
   addWriterToggleHandler: [bool?: boolean]
 }>()
 
+const inputedWriterBooleanValue = ref<boolean>()
+const inputedWriterNumberValue = ref<number>()
+
 const newWriter = ref<WriterData>({
   type: 'Write Single Coil',
   values: [],
@@ -60,16 +63,14 @@ watch(
       <q-form
         @submit="
           () => {
-            if(newWriter.value === undefined){
-              return;
+            if (newWriter.type === typeOptions[0] || newWriter.type === typeOptions[1]) {
+              if (newWriter.type === typeOptions[0]) newWriter.values.push(inputedWriterBooleanValue!)
+              else newWriter.values.push(inputedWriterNumberValue!)
             }
-            if(newWriter.type ===typeOptions[0] || newWriter.type ===typeOptions[1]){
-              newWriter.values.push(newWriter.value!)
-            }
-            emits('addWriter', newWriter);
-            console.log(newWriter);
+            emits('addWriter', newWriter)
+            console.log(newWriter)
 
-            emits('addWriterToggleHandler', false);
+            emits('addWriterToggleHandler', false)
           }
         "
       >
@@ -93,11 +94,11 @@ watch(
           </div>
           <div class="row height">
             <div class="col-6 flex items-center">Value (Boolean)</div>
-            <q-toggle outlined v-model="(newWriter.value as boolean)" dense class="col-6" :rules="[(val:any) => !!val || '* Required']" />
+            <q-toggle outlined v-model="inputedWriterBooleanValue" dense class="col-6" :rules="[(val: any) => !!val || '* Required']" />
           </div>
           <div class="row height">
             <div class="col-6 flex items-center">Invalid Function</div>
-            <q-toggle outlined v-model="newWriter.invalidFunction" dense class="col-6" :rules="[(val:any) => !!val || '* Required']" />
+            <q-toggle outlined v-model="newWriter.invalidFunction" dense class="col-6" :rules="[(val: any) => !!val || '* Required']" />
           </div>
         </template>
 
@@ -113,7 +114,7 @@ watch(
           </div>
           <div class="row height">
             <div class="col-6 flex items-center">Value (UInt16)</div>
-            <q-input outlined v-model="(newWriter.value as number)" dense class="col-6" />
+            <q-input outlined v-model="inputedWriterNumberValue" dense class="col-6" />
           </div>
           <div class="row height">
             <div class="col-6 flex items-center">Byte Swap</div>
@@ -159,11 +160,11 @@ watch(
           </div>
           <div class="row height">
             <div class="col-6 flex items-center">Invalid Function</div>
-            <q-toggle outlined v-model="newWriter.invalidFunction" dense class="col-6" :rules="[(val:any) => !!val || '* Required']" />
+            <q-toggle outlined v-model="newWriter.invalidFunction" dense class="col-6" :rules="[(val: any) => !!val || '* Required']" />
           </div>
           <div class="row height">
             <div class="col-6 flex items-center">Invalid Length</div>
-            <q-toggle outlined v-model="newWriter.invalidLength" dense class="col-6" :rules="[(val:any) => !!val || '* Required']" />
+            <q-toggle outlined v-model="newWriter.invalidLength" dense class="col-6" :rules="[(val: any) => !!val || '* Required']" />
           </div>
         </template>
 
@@ -209,11 +210,11 @@ watch(
           </div>
           <div class="row height">
             <div class="col-6 flex items-center">Invalid Function</div>
-            <q-toggle outlined v-model="newWriter.invalidFunction" dense class="col-6" :rules="[(val:any) => !!val || '* Required']" />
+            <q-toggle outlined v-model="newWriter.invalidFunction" dense class="col-6" :rules="[(val: any) => !!val || '* Required']" />
           </div>
           <div class="row height">
             <div class="col-6 flex items-center">Invalid Length</div>
-            <q-toggle outlined v-model="newWriter.invalidLength" dense class="col-6" :rules="[(val:any) => !!val || '* Required']" />
+            <q-toggle outlined v-model="newWriter.invalidLength" dense class="col-6" :rules="[(val: any) => !!val || '* Required']" />
           </div>
         </template>
 
@@ -267,7 +268,7 @@ watch(
           </div>
           <div class="row height">
             <div class="col-6 flex items-center">Invalid Function</div>
-            <q-toggle outlined v-model="newWriter.invalidFunction" dense class="col-6" :rules="[(val:any) => !!val || '* Required']" />
+            <q-toggle outlined v-model="newWriter.invalidFunction" dense class="col-6" :rules="[(val: any) => !!val || '* Required']" />
           </div>
         </template>
 
@@ -313,11 +314,11 @@ watch(
           </div>
           <div class="row height">
             <div class="col-6 flex items-center">Invalid Function</div>
-            <q-toggle outlined v-model="newWriter.invalidFunction" dense class="col-6" :rules="[(val:any) => !!val || '* Required']" />
+            <q-toggle outlined v-model="newWriter.invalidFunction" dense class="col-6" :rules="[(val: any) => !!val || '* Required']" />
           </div>
           <div class="row height">
             <div class="col-6 flex items-center">Invalid Length</div>
-            <q-toggle outlined v-model="newWriter.invalidLength" dense class="col-6" :rules="[(val:any) => !!val || '* Required']" />
+            <q-toggle outlined v-model="newWriter.invalidLength" dense class="col-6" :rules="[(val: any) => !!val || '* Required']" />
           </div>
         </template>
 

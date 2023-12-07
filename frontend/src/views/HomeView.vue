@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import MMERecent from '../components/MME-Recent.vue'
 import MSERecent from '../components/MSE-Recent.vue'
-import MMSRecent from '../components/MMS-Recent.vue'
-import MSSRecent from '../components/MSS-Recent.vue'
 </script>
 
 <template>
@@ -37,16 +35,6 @@ import MSSRecent from '../components/MSS-Recent.vue'
         <div class="q-pa-sm colums items-start q-gutter-sm">
           <q-badge outline color="orange" size="md" label="Modbus Slave Ethernet" />
           <MSERecent />
-        </div>
-
-        <div class="q-pa-sm colums items-start q-gutter-sm">
-          <q-badge outline color="orange" size="md" label="Modbus Master Serial" />
-          <MMSRecent />
-        </div>
-
-        <div class="q-pa-sm colums items-start q-gutter-sm">
-          <q-badge outline color="orange" size="md" label="Modbus Slave Serial" />
-          <MSSRecent />
         </div>
       </div>
     </div>

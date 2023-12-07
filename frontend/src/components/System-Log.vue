@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue'
 import type { QTableProps } from 'quasar'
-import { onMounted, ref } from 'vue'
 import { useIdStore } from '../store/idStore'
 const idStore = useIdStore()
 type LogType = {
@@ -44,18 +44,25 @@ const columns: QTableProps['columns'] = [
   },
 ]
 
-onMounted(() => {
-  const clientId = idStore.get()
-  const eventSource = new EventSource('/api/modbus/sse/system?clientId=' + clientId) // 서버 SSE 엔드포인트 주소
+watch(()=>idStore.clientId,()=>{
+  const clientId = idStore.clientId
+  console.log(clientId)
+  console.log("sys sse connected")
+  if(clientId.length>0){
+    const eventSource = new EventSource('/api/sse/system?clientId=' + clientId) // 서버 SSE 엔드포인트 주소
 
-  eventSource.addEventListener('message', (event) => {
-    const data = JSON.parse(event.data)
-    logs.value.unshift({
-      time: data.time,
-      type: data.type,
-      content: data.content,
+    eventSource.addEventListener('message', (event) => {
+      const data = JSON.parse(event.data)
+      logs.value.unshift({
+        time: data.time,
+        type: data.type,
+        content: data.content,
+      })
     })
-  })
+  }
+  else{
+    console.log("No clientId ")
+  }
 })
 </script>
 <template>

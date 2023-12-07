@@ -11,3 +11,12 @@ CREATE TABLE IF NOT EXISTS `LOG`.`Client_Log`
     `Type`    VARCHAR(30)       DEFAULT NULL,
     `Content` VARCHAR(300)      DEFAULT NULL
 );
+
+CREATE TABLE IF NOT EXISTS `USERS`.`Accounts`
+(
+
+    `Username` VARCHAR(30) PRIMARY KEY,
+    `Password` VARCHAR(60) NOT NULL,
+    `Role` VARCHAR(30)
+);
+

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import axios from 'axios'
 import { onMounted, onUnmounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { $axios } from '@/axios/index'
 import { useIdStore } from '../store/idStore'
+import { useRoute } from 'vue-router'
 
-import MMEReader from '../components/MME/MME-Reader.vue'
 import MMETopbar from '../components/MME/MME-Topbar.vue'
+import MMEReader from '../components/MME/MME-Reader.vue'
 import MMEWriter from '../components/MME/MME-Writer.vue'
 import TransLog from '../components/Trans-Log.vue'
 
@@ -17,9 +17,9 @@ const setRunningState = (bool: boolean) => {
   isRunning.value = bool
   console.log(isRunning.value)
   if (!isRunning.value) {
-    axios
-      .post('/api/modbus/exit', {
-        id: idStore.get(),
+    $axios()
+      .post('/api/exit', {
+        id: idStore.clientId,
       })
       .catch((err) => {
         console.log(err)
@@ -58,7 +58,7 @@ const addReader = (reader: ReaderData) => {
 const deleteReaders = () => {
   const newReaders = readersData.value.filter(
     (item) =>
-      !!selectedReadersData.value.some((target) => {
+      !selectedReadersData.value.some((target) => {
         console.log(target.time + ' : ' + item.time)
 
         return target.time == item.time
@@ -72,11 +72,11 @@ const startReaderSimulator = async () => {
     return
   }
 
-  await axios
+  await $axios()
     .post(
-      '/api/modbus/reader',
+      '/api/reader',
       {
-        id: idStore.get(),
+        id: idStore.clientId,
         networkData: {
           ...networkMasterData.value,
           msgCount: readersData.value.length,
@@ -119,7 +119,7 @@ const addWriter = (writer: WriterData) => {
 const deleteWriters = () => {
   const newWriters = writersData.value.filter(
     (item) =>
-      !!selectedWritersData.value.some((target) => {
+      !selectedWritersData.value.some((target) => {
         return target.time == item.time
       })
   )
@@ -131,15 +131,23 @@ const startWriterSimulator = async () => {
     return
   }
   // setViewLogToggle(true);
-  await axios
-    .post('/api/modbus/writer', {
-      id: idStore.get(),
-      networkData: {
-        ...networkMasterData.value,
-        msgCount: writersData.value.length,
+  await $axios()
+    .post(
+      '/api/writer',
+      {
+        id: idStore.clientId,
+        networkData: {
+          ...networkMasterData.value,
+          msgCount: writersData.value.length,
+        },
+        msgData: writersData.value,
       },
-      msgData: writersData.value,
-    })
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
     .then(() => {
       setViewLogToggle(true)
     })
@@ -159,13 +167,20 @@ onMounted(() => {
   } else {
     // query 파라미터가 없을 경우
   }
-  console.log('id : ' + idStore.get())
-  axios
-    .post('/api/modbus/id', {
-      id: idStore.get(),
-    })
+  $axios()
+    .post(
+      '/api/id',
+      {
+        id: idStore.clientId,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
     .then(() => {
-      console.log('id : ' + idStore.get())
+      console.log('id : ' + idStore.clientId)
     })
     .catch((err) => {
       console.log(err)
@@ -173,10 +188,18 @@ onMounted(() => {
 })
 onUnmounted(() => {
   if (isRunning.value)
-    axios
-      .post('/api/modbus/exit', {
-        id: idStore.get(),
-      })
+    $axios()
+      .post(
+        '/api/exit',
+        {
+          id: idStore.clientId,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
       .catch((err) => {
         console.log(err)
       })
@@ -184,7 +207,7 @@ onUnmounted(() => {
 </script>
 <template>
   <div class="column">
-    <MMETopbar @setViewLogToggle="setViewLogToggle" @setNetworkMasterData="setNetworkMasterData" :networkData="networkMasterData" :viewLogToggle="viewLogToggle" />
+    <MMETopbar v-model:view-log-toggle="viewLogToggle" @setNetworkMasterData="setNetworkMasterData" :networkData="networkMasterData" />
     <div v-show="!viewLogToggle" class="col row">
       <MMEReader
         @setViewLogToggle="setViewLogToggle"
@@ -214,4 +237,53 @@ onUnmounted(() => {
     </div>
   </div>
 </template>
-<style></style>
+<style>
+.title {
+  height: 40px;
+  border-bottom: solid 1px;
+  border-color: #bcbcbc;
+  background: #f3f4f5;
+}
+
+.dialog-box {
+  width: 45%;
+
+  @media (max-width: 800px) {
+    width: 90%;
+  }
+}
+
+.height {
+  min-height: 60px;
+}
+
+.menu-bar {
+  height: 40px;
+  border-bottom: solid 1px;
+  border-color: #bcbcbc;
+  background: #dfdfdf;
+}
+
+.menu-bar-dense {
+  height: 30px;
+  border-bottom: solid 1px;
+  border-color: #bcbcbc;
+  background: #dfdfdf;
+}
+.border-left {
+  border-left: solid 1px;
+  border-color: #bcbcbc;
+}
+.input-box {
+  .q-field--dense .q-field__control {
+    height: 100% !important;
+  }
+  .q-field__bottom {
+    height: 0px;
+    overflow: hidden;
+    margin: 0px;
+    padding: 0px;
+    display: none !important;
+  }
+}
+</style>

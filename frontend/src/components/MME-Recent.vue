@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
 import { useToggleStore } from '../store/modules/settingtoggle'
 import type { NetworkMasterData } from '../types'
+import { useRouter } from 'vue-router'
 
-let savedData = ref<NetworkMasterData[]>([])
+let savedData = ref<(NetworkMasterData & { ratingModel: number })[]>([])
 
 const deleteCard = (index: number) => {
   savedData.value.splice(index, 1)
@@ -21,8 +21,8 @@ const deleteCard = (index: number) => {
 const router = useRouter()
 const openCard = (selectedData: NetworkMasterData) => {
   const toggleStore = useToggleStore()
-  toggleStore.toggleSetting(false)
-
+  toggleStore.networkDialogToggle = false
+  toggleStore.toggle()
   // 선택한 데이터를 JSON 문자열로 변환하여 URL params로 전달
   const selectedDataJSON = JSON.stringify(selectedData)
   router.push({ name: 'MasterEthernet', query: { selectedData: selectedDataJSON } })
@@ -44,8 +44,6 @@ onMounted(() => {
   loadData()
   console.log(savedData.value)
 })
-
-const ratingModel = ref<number>(2)
 
 let buttonActivated = ref(true)
 
@@ -79,7 +77,7 @@ const moveToTop = (index: number) => {
         <q-btn flat @click="() => openCard(data)">Open</q-btn>
 
         <q-btn flat @click="moveToTop(i)">
-          <q-rating v-model="ratingModel" size="1em" :max="1" color="yellow" class="rating">
+          <q-rating v-model="data.ratingModel" size="1em" :max="1" color="yellow" class="rating">
             <template v-slot:tip-1>
               <q-tooltip>고정!</q-tooltip>
             </template>

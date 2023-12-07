@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import type { QTableProps } from 'quasar'
-import { computed, onMounted, ref } from 'vue'
 
 type LogType = {
   time: string
@@ -58,7 +58,7 @@ const columns: QTableProps['columns'] = [
 ]
 onMounted(() => {
   axios
-    .get('/api/modbus/log')
+    .get('http://localhost:8080/api/log')
     .then((response) => {
       const data = response.data.data
       for (let i = 0; i < data.length; i++) {
@@ -75,13 +75,20 @@ onMounted(() => {
     })
 })
 
+const filter = ref('')
 const filteredRecords = computed(() => {
   const fromDate = new Date(selectedDate.value.from)
   const toDate = new Date(selectedDate.value.to)
 
   return records.value.filter((record) => {
     const recordDate = new Date(record.time)
-    return recordDate >= fromDate && recordDate <= toDate
+    return (
+      recordDate >= fromDate &&
+      recordDate <= toDate &&
+      (filter.value.trim() === '' || // 검색 필터가 비어있거나
+        record.type.toLowerCase().includes(filter.value.trim().toLowerCase()) ||
+        record.content.toLowerCase().includes(filter.value.trim().toLowerCase()))
+    ) // 레코드에 검색어가 포함되어 있는 경우
   })
 })
 
@@ -100,7 +107,15 @@ const totalValue = computed(() => {
         <q-date v-model="selectedDate" range />
       </div>
       <div class="col table-container">
-        <q-table flat square :rows="filteredRecords" :columns="columns" row-key="time" dense class="table" :rows-per-page-options="[0]" hide-no-data hide-pagination />
+        <q-table flat bordered title="Logs" :rows="filteredRecords" :columns="columns" row-key="time" dense class="table" :pagination="{ rowsPerPage: 15 }">
+          <template v-slot:top-right>
+            <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+              <template v-slot:append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </template>
+        </q-table>
       </div>
     </div>
     <q-badge outline color="primary">Total Value: {{ totalValue }}</q-badge>

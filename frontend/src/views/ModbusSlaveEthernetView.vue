@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import axios from 'axios'
-import { onMounted, onUnmounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useToggleStore } from '../store/modules/settingtoggle'
 import MSEMemory from '../components/MSE-Memory.vue'
 import TransLog from '../components/Trans-Log.vue'
+import { $axios } from '@/axios/index'
+import { useRoute } from 'vue-router'
 import { useIdStore } from '../store/idStore'
-import { useToggleStore } from '../store/modules/settingtoggle'
 const idStore = useIdStore()
 // 통신 dialog values
 const protocolOptions = ['TCP', 'RTU', 'ASCII']
@@ -15,9 +15,9 @@ const setRunningState = (bool: boolean) => {
   isRunning.value = bool
   console.log(isRunning.value)
   if (!isRunning.value) {
-    axios
-      .post('/api/modbus/exit', {
-        id: idStore.get(),
+    $axios()
+      .post('/api/exit', {
+        id: idStore.clientId,
       })
       .catch((err) => {
         console.log(err)
@@ -34,9 +34,9 @@ type NetworkSlaveData = {
 const slaveEthernetData = ref<NetworkSlaveData>({})
 
 const toggleStore = useToggleStore()
-const settingToggleHandler = () => {
-  toggleStore.toggleSetting()
-}
+//toggleStore.toggleSetting(false)
+toggleStore.networkDialogToggle = false
+toggleStore.toggle()
 
 // Log
 const viewLogToggle = ref<boolean>(false)
@@ -64,7 +64,7 @@ const setNetwork = () => {
     }
   }
 
-  settingToggleHandler()
+  toggleStore.toggle()
 }
 
 const route = useRoute()
@@ -78,9 +78,9 @@ onMounted(() => {
   } else {
     // query 파라미터가 없을 경우
   }
-  axios
-    .post('/api/modbus/id', {
-      id: idStore.get(),
+  $axios()
+    .post('/api/id', {
+      id: idStore.clientId,
     })
     .catch((err) => {
       console.log(err)
@@ -88,9 +88,9 @@ onMounted(() => {
 })
 onUnmounted(() => {
   if (isRunning.value)
-    axios
-      .post('/api/modbus/exit', {
-        id: idStore.get(),
+    $axios()
+      .post('/api/exit', {
+        id: idStore.clientId,
       })
       .catch((err) => {
         console.log(err)
@@ -103,7 +103,7 @@ onUnmounted(() => {
       <div>Modbus > <strong>Slave Ethernet</strong></div>
     </div>
     <div class="menu-bar row items-center">
-      <q-btn :outline="!toggleStore.networkDialogToggle" rounded size="md" padding="2px 12px" color="main" class="setting-btn q-mx-sm" @click="settingToggleHandler">
+      <q-btn :outline="!toggleStore.networkDialogToggle" rounded size="md" padding="2px 12px" color="main" class="setting-btn q-mx-sm" @click="toggleStore.toggle()">
         통신 설정
       </q-btn>
       <q-btn :outline="viewLogToggle" rounded size="md" padding="2px 12px" color="main" class="setting-btn q-mx-sm" @click="viewLogToggleHandler(false)"> 메모리 </q-btn>

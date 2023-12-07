@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useStateStore } from '@/store/stateStore'
 
 import type { QTableProps } from 'quasar'
 import type { NetworkMasterData, WriterData } from '../../types'
@@ -7,8 +8,8 @@ import MMEWriterDialog from './MME-WriterDialog.vue'
 const props = defineProps<{
   networkData: NetworkMasterData
   writersData: WriterData[]
-  isRunning: boolean
 }>()
+const stateStore = useStateStore()
 
 const emits = defineEmits<{
   addWriter: [writer: WriterData]
@@ -54,6 +55,7 @@ const columns: QTableProps['columns'] = [
     </div>
     <div class="menu-bar-dense row items-center justify-end">
       <q-btn
+        v-show="!stateStore.isRunning"
         rounded
         unelevated
         color="positive"
@@ -68,6 +70,22 @@ const columns: QTableProps['columns'] = [
         "
       >
         실행
+      </q-btn>
+      <q-btn
+        v-if="stateStore.isRunning"
+        rounded
+        unelevated
+        size="md"
+        padding="0.1px 12px"
+        color="negative"
+        class="setting-btn q-mx-md"
+        @click="
+          () => {
+            emits('setRunningState', false)
+          }
+        "
+      >
+        중지
       </q-btn>
       <q-btn flat color="main" size="md" padding="2px 12px" class="q-mx-sm" @click="addWriterToggleHandler()"> 추가 </q-btn>
       <q-separator vertical />

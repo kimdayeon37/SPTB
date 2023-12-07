@@ -22,15 +22,14 @@ buildscript {
 }
 
 plugins {
-    val springBootVersion = "3.1.3"
-    val springDependencyManagement = "1.1.3"
-    val kotlinVersion = "1.8.22"
+    val springBootVersion = "3.2.0"
+    val springDependencyManagement = "1.1.4"
+    val kotlinVersion = "1.9.21"
 
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version springDependencyManagement
-//    id("org.graalvm.buildtools.native") version "0.9.23"
 
-    id("com.github.node-gradle.node") version "5.0.0"
+    id("com.github.node-gradle.node") version "7.0.1"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
 
     kotlin("jvm") version kotlinVersion
@@ -66,11 +65,16 @@ repositories {
 }
 
 dependencies {
+    // spring security + JWT
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
     // log4j2
     implementation("org.springframework.boot:spring-boot-starter-log4j2")
     implementation("com.lmax:disruptor:3.4.4")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2")
-    implementation("org.yaml:snakeyaml:2.0")
+    implementation("org.yaml:snakeyaml:2.2")
 
     // db r2dbc
     implementation("io.r2dbc:r2dbc-spi")
@@ -94,6 +98,7 @@ dependencies {
     // spring
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-security")
 
     // swagger
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0")
@@ -109,6 +114,7 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
+    testImplementation("org.springframework.security:spring-security-test")
 }
 
 tasks.withType<Test> {
@@ -127,19 +133,25 @@ tasks.bootJar {
     enabled = true
 
     launchScript {
-        properties["initInfoRequiredStart"] = "\$remote_fs \$syslog \$network"
-        properties["initInfoRequiredStop"] = "\$remote_fs \$syslog \$network"
+        properties["initInfoRequiredStart"] = "\$remote_fs \$syslog \$network \$mariadb"
+        properties["initInfoRequiredStop"] = "\$remote_fs \$syslog \$network \$mariadb"
     }
 
-//	archiveBaseName = ""
-//	archiveAppendix = ""
-//	archiveVersion = ""
+    val gitBranch = tasks.generateGitProperties.get().generatedProperties["git.branch"].toString().split("/").last()
+    val gitCommitId = tasks.generateGitProperties.get().generatedProperties["git.commit.id"].toString()
+    val commitTime = tasks.generateGitProperties.get().generatedProperties["git.commit.time"].toString()
+
+    val commitTimeParse = OffsetDateTime.parse(commitTime, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ"))
+    val commitDateStr = commitTimeParse.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_Z"))
+
+    archiveAppendix = gitBranch
+    archiveVersion = "${commitDateStr}-${gitCommitId}"
+
     archiveClassifier = ""
-//	archiveExtension = "jar"
-//	archiveFileName = project.name + ".jar";
+
     manifest {
         attributes["Implementation-Title"] = project.name
-        attributes["Implementation-Version"] = project.version
+        attributes["Implementation-Version"] = gitCommitId
     }
 }
 
@@ -147,76 +159,44 @@ tasks.bootJar {
 tasks.register("bootRunLocal", BootRun::class.java) {
     group = "Application"
 
-    tasks.nodeSetup.get().enabled = false
-    tasks.npmSetup.get().enabled = false
-    tasks.npmInstall.get().enabled = false
-    npmBuildTask.get().enabled = false
-
-    sourceSets.main {
-        kotlin.srcDirs(kotlin.srcDirs, file("$projectDir/src/test/kotlin/local"))
-        resources.srcDirs(resources.srcDirs, file("$projectDir/src/test/resources"))
-    }
-
     this.mainClass = tasks.bootRun.get().mainClass
     this.classpath = sourceSets.main.get().runtimeClasspath
 
-    args(
-        "--spring.profiles.active=local"
-    )
-
-    jvmArgs(
-        "-Xms128m",
-        "-Xmx128m",
-        "-XX:HeapDumpPath=/tmp/webDump.hprof",
-    )
-}
-
-tasks.register("bootRunDev", BootRun::class.java) {
-    group = "Application"
-
-    sourceSets.main {
-        kotlin.srcDirs(kotlin.srcDirs, file("$projectDir/src/test/kotlin/local"))
-        resources.srcDirs(resources.srcDirs, file("$projectDir/src/test/resources"))
+    dependencies {
+        implementation("com.h2database:h2")
+        implementation("io.r2dbc:r2dbc-h2")
     }
 
-    this.mainClass = tasks.bootRun.get().mainClass
-    this.classpath = sourceSets.main.get().runtimeClasspath
-
     args(
-        "--spring.profiles.active=dev"
+            "--spring.profiles.active=local",
     )
 
     jvmArgs(
-        "-Xms128m",
-        "-Xmx128m",
-        "-XX:HeapDumpPath=/tmp/webDump.hprof",
+            "-Xms128m",
+            "-Xmx128m",
+            "-XX:HeapDumpPath=/tmp/webDump.hprof",
     )
 }
 
+sourceSets {
+    main {
+        val taskNames = project.gradle.startParameter.taskNames
+
+        if (taskNames.any { it == "bootRunLocal" }) {
+            kotlin.srcDirs(kotlin.srcDirs, file("$projectDir/src/test/local"))
+            resources.srcDirs(resources.srcDirs, file("$projectDir/src/test/resources"))
+        }
+    }
+
+    test {
+        kotlin.srcDirs(kotlin.srcDirs, file("$projectDir/src/test/local"))
+    }
+}
 //========================================================
 // git properties
 gitProperties {
     keys = arrayListOf("git.branch", "git.commit.id", "git.commit.id.abbrev", "git.commit.time", "git.tags")
 }
-
-//import java.time.OffsetDateTime
-//import java.time.format.DateTimeFormatter
-tasks.generateGitProperties {
-    val gitBranch = generatedProperties["git.branch"].toString().split("/").last()
-    val gitCommitId = generatedProperties["git.commit.id"].toString()
-    val commitTime = generatedProperties["git.commit.time"].toString()
-
-    doFirst {
-        val commitTimeParse = OffsetDateTime.parse(commitTime, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ"))
-        val commitDateStr = commitTimeParse.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_Z"))
-
-        tasks.bootJar.get().archiveAppendix = gitBranch
-        tasks.bootJar.get().archiveVersion = "${commitDateStr}-${gitCommitId}"
-        tasks.bootJar.get().manifest.attributes["Implementation-Version"] = gitCommitId
-    }
-}
-
-tasks["bootBuildInfo"].dependsOn(tasks.generateGitProperties)
 
 //========================================================
 // jooq
@@ -303,10 +283,11 @@ tasks.compileJava.get().dependsOn(generateJooqTask)
 // node, npm
 val homePath = System.getProperty("user.home")
 val webappDir = "${project.projectDir}/../frontend"
+val webappBuildDir = "$webappDir/dist"
 
 node {
-    version = "18.15.0"
-    npmVersion = "9.6.6"
+    version = "18.17.1"
+    npmVersion = "10.2.4"
 
     workDir = file("${homePath}/.gradle/nodejs")
     npmWorkDir = file("${homePath}/.gradle/npm")
@@ -316,22 +297,24 @@ node {
 }
 
 val npmBuildTask = tasks.register("npmBuild", NpmTask::class.java) {
-    dependsOn(tasks.npmInstall)
+    dependsOn(tasks.npmInstall, tasks.processResources)
 
     workingDir = file(webappDir)
 
+    doFirst {
+        delete(webappBuildDir)
+    }
+
+    enabled = file(webappDir).exists()
     args = arrayListOf("run", "build")
 
     doLast {
         copy {
-            from("${webappDir}/dist")
+            from(webappBuildDir)
             into("${layout.buildDirectory.get()}/resources/main/static")
         }
     }
 }
 
-if (file(webappDir).exists()) {
-    tasks.processResources.get().group = "build"
-    tasks.processResources.get().duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    tasks.processResources.get().finalizedBy(npmBuildTask)
-}
+tasks.processResources.get().duplicatesStrategy = DuplicatesStrategy.INCLUDE
+tasks.bootJar.get().dependsOn(npmBuildTask)

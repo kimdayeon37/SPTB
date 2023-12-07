@@ -7,6 +7,7 @@ import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.reactor.mono
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.validation.BindException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -50,6 +51,12 @@ class RestControllerExceptionHandler(
     fun exception400(exchange: ServerWebExchange?, ex: RestErrorException): Mono<Void> = mono {
         process(exchange, ex, HttpStatus.BAD_REQUEST).awaitSingleOrNull()
     }.then()
+
+    @ExceptionHandler(BadCredentialsException::class)
+    fun exceptionBadCredentials(exchange: ServerWebExchange?, ex: BadCredentialsException): Mono<Void> = mono {
+        process(exchange, ex, HttpStatus.UNAUTHORIZED).awaitSingleOrNull()
+    }.then()
+
 
     private fun process(
         exchange: ServerWebExchange?,

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import axios from 'axios'
-import { type PropType, ref } from 'vue'
+import { ref, type PropType } from 'vue'
+import { $axios } from '@/axios/index'
 import { useIdStore } from '../store/idStore'
 
 const idStore = useIdStore()
@@ -39,11 +39,11 @@ const startSimulator = async () => {
     return
   }
   emits('setRunningState', true)
-  await axios
+  await $axios()
     .post(
-      '/api/modbus/MSE/start',
+      '/api/MSE/start',
       {
-        id: idStore.get(),
+        id: idStore.clientId,
         networkData: props.networkData,
         msgData: inputedMemoryData.value,
       },

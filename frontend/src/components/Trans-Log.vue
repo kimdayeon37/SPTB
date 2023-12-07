@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import type { QTableProps } from 'quasar'
-import { onMounted, ref } from 'vue'
 import { useIdStore } from '../store/idStore'
 const idStore = useIdStore()
 type LogType = {
@@ -39,8 +39,8 @@ const columns: QTableProps['columns'] = [
 ]
 
 onMounted(() => {
-  const clientId = idStore.get()
-  const eventSource = new EventSource('/api/modbus/sse/trans?clientId=' + clientId) // 서버 SSE 엔드포인트 주소
+  const clientId = idStore.clientId
+  const eventSource = new EventSource('/api/sse/trans?clientId=' + clientId) // 서버 SSE 엔드포인트 주소
 
   eventSource.addEventListener('message', (event) => {
     const data = JSON.parse(event.data)

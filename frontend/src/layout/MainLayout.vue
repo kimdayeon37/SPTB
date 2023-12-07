@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import SystemLog from '../components/System-Log.vue'
-
 import { useToggleStore } from '../store/modules/settingtoggle'
+import { useUserStore } from '../store/userStore'
+import { useRouter } from 'vue-router'
 
 const leftDrawerOpen = ref(false)
 const toggleLeftDrawer = () => {
@@ -10,8 +11,19 @@ const toggleLeftDrawer = () => {
 }
 
 const toggleStore = useToggleStore()
-const settingToggleHandler = () => {
-  toggleStore.toggleSetting()
+//toggleStore.toggleSetting(false)
+toggleStore.networkDialogToggle = false
+toggleStore.toggle()
+
+const router = useRouter()
+const userStore = useUserStore()
+const logoutUser = () => {
+  userStore.clearUsername()
+  router.push({ path: '/Login' })
+}
+
+const isUserLogin = () => {
+  return userStore.isLogin()
 }
 </script>
 <template>
@@ -23,28 +35,38 @@ const settingToggleHandler = () => {
         <q-toolbar-title>
           <div class="q-ml-sm text-bold">Naonworks SPTB</div>
         </q-toolbar-title>
+        <template v-if="isUserLogin()">
+          <div class="q-gutter-x-md">
+            <span> {{ userStore.id }} 님 환영합니다!</span>
+            <q-btn color="secondary"><a href="javascript:;" @click="logoutUser" style="text-decoration: none; color: white">Logout</a></q-btn>
+          </div>
+        </template>
       </q-toolbar>
     </q-header>
 
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered class="sidebar" :width="220">
-      <q-list class="">
-        <q-item to="/" clickable v-ripple>
+      <q-list>
+        <q-item to="/Login" clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon name="login" />
+          </q-item-section>
+          <q-item-section> Log In </q-item-section>
+        </q-item>
+        <q-item to="/Home" clickable v-ripple>
           <q-item-section avatar>
             <q-icon name="home" />
           </q-item-section>
-          <q-item-section> home </q-item-section>
+          <q-item-section> Home </q-item-section>
         </q-item>
-        <q-item to="/Log" v-ripple>
+        <q-item to="/Log" clickable v-ripple>
           <q-item-section avatar>
             <q-icon name="search" />
           </q-item-section>
           <q-item-section> Log Search </q-item-section>
         </q-item>
         <q-expansion-item expand-separator label="Modbus" default-opened :content-inset-level="0.5">
-          <q-item to="/Modbus/MasterEthernet"><q-item-section @click="settingToggleHandler">Master Ethernet</q-item-section></q-item>
-          <q-item to="/Modbus/SlaveEthernet"><q-item-section @click="settingToggleHandler">Slave Ethernet</q-item-section></q-item>
-          <q-item to="/Modbus/MasterSerial"><q-item-section @click="settingToggleHandler">Master Serial</q-item-section></q-item>
-          <q-item to="/Modbus/SlaveSerial"><q-item-section @click="settingToggleHandler">Slave Serial</q-item-section></q-item>
+          <q-item to="/Modbus/MasterEthernet"><q-item-section @click="toggleStore.toggle()">Master Ethernet</q-item-section></q-item>
+          <q-item to="/Modbus/SlaveEthernet"><q-item-section @click="toggleStore.toggle()">Slave Ethernet</q-item-section></q-item>
         </q-expansion-item>
         <q-expansion-item :content-inset-level="0.5" expand-separator label="OPC-UA" default-opened>
           <q-item to="/OPCUA/Client"><q-item-section>Client</q-item-section></q-item>

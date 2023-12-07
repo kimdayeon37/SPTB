@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onUpdated, ref } from 'vue'
-import { useToggleStore } from '../../store/modules/settingtoggle'
+import { ref, watch } from 'vue'
 import type { NetworkMasterData } from '../../types'
+import { useToggleStore } from '../../store/modules/settingtoggle'
 const props = defineProps<{
   networkData: NetworkMasterData
 }>()
@@ -15,9 +15,10 @@ const emits = defineEmits<{
 }>()
 
 const toggleStore = useToggleStore()
-const settingToggleHandler = () => {
-  toggleStore.toggleSetting()
-}
+//toggleStore.toggleSetting(false)
+toggleStore.networkDialogToggle = false
+toggleStore.toggle()
+
 const setNetwork = () => {
   const data = newNetworkData.value
   // Check if currentData is not an empty object
@@ -37,18 +38,17 @@ const setNetwork = () => {
       console.error('Error saving data to localStorage:', error)
     }
   }
-  settingToggleHandler()
+  toggleStore.toggle()
 
   //()=> { emits('setNetworkDialogToggle');}
 }
 const protocolOptions = ['TCP']
-onUpdated(() => {
-  if (props.networkData !== null) {
-    console.log(1)
-
+watch(
+  () => props.networkData,
+  () => {
     newNetworkData.value = props.networkData
   }
-})
+)
 </script>
 <template>
   <q-dialog v-if="toggleStore.networkDialogToggle" v-model="toggleStore.networkDialogToggle" persistent>

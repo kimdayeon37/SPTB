@@ -12,6 +12,7 @@ import reactor.core.publisher.Flux
 
 object JooqQuery {
 
+    // out을 통해 Record의 서브 타입 까지 받게 해주는 이유?
     suspend fun <T : ResultQuery<out R>, R : Record> findAllFlow(query: T): Flow<R> {
         JooqUtils.queryLog(query)
 

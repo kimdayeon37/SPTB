@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
 import { useToggleStore } from '../store/modules/settingtoggle'
+import { useRouter } from 'vue-router'
 
 type SettingType = {
   protocol?: string
@@ -14,7 +14,9 @@ type SettingType = {
 const router = useRouter()
 const openCard = (selectedData: SettingType) => {
   const toggleStore = useToggleStore()
-  toggleStore.toggleSetting(false)
+  //toggleStore.toggleSetting(false)
+  toggleStore.networkDialogToggle = false
+  toggleStore.toggle()
 
   // 선택한 데이터를 JSON 문자열로 변환하여 URL params로 전달
   const selectedDataJSON = JSON.stringify(selectedData)
@@ -32,8 +34,8 @@ const deleteCard = (index: number) => {
     localStorage.setItem('slaveEthernetData', JSON.stringify(parsedData))
   }
 }
-let savedData = ref<SettingType[]>([])
-let ratingModel = ref<number>(1)
+
+let savedData = ref<(SettingType & { ratingModel: number })[]>([])
 
 // 데이터 로드 함수
 const loadData = () => {
@@ -66,32 +68,30 @@ const moveToTop = (index: number) => {
 </script>
 
 <template>
-  <template v-if="savedData && savedData.length > 0">
-    <div v-for="(data, i) in savedData" :key="i">
-      <q-card class="my-card bg-primary text-white">
-        <q-card-section>
-          <div class="text-h6">{{ data.protocol }}</div>
-          <div class="text-subtitle2">[Port] {{ data.port }}</div>
-          <div class="text-subtitle2">[MaxSessionCount] {{ data.maxSessionCount }}</div>
-          <div class="text-subtitle2">[SlaveId] {{ data.slaveId }}</div>
-          <div class="text-subtitle2">[WaitTimeout] {{ data.waitTimeout }}</div>
-        </q-card-section>
+  <div v-for="(data, i) in savedData" :key="i">
+    <q-card class="my-card bg-primary text-white">
+      <q-card-section>
+        <div class="text-h6">{{ data.protocol }}</div>
+        <div class="text-subtitle2">[Port] {{ data.port }}</div>
+        <div class="text-subtitle2">[MaxSessionCount] {{ data.maxSessionCount }}</div>
+        <div class="text-subtitle2">[SlaveId] {{ data.slaveId }}</div>
+        <div class="text-subtitle2">[WaitTimeout] {{ data.waitTimeout }}</div>
+      </q-card-section>
 
-        <q-separator dark />
+      <q-separator dark />
 
-        <q-card-actions>
-          <q-btn flat @click="deleteCard(i)">Delete</q-btn>
-          <q-btn flat @click="() => openCard(data)">Open</q-btn>
+      <q-card-actions>
+        <q-btn flat @click="deleteCard(i)">Delete</q-btn>
+        <q-btn flat @click="() => openCard(data)">Open</q-btn>
 
-          <q-btn flat @click="moveToTop(i)">
-            <q-rating v-model="ratingModel" size="1em" :max="1" color="yellow" class="rating">
-              <template v-slot:tip-1>
-                <q-tooltip>고정!</q-tooltip>
-              </template>
-            </q-rating>
-          </q-btn>
-        </q-card-actions>
-      </q-card>
-    </div>
-  </template>
+        <q-btn flat @click="moveToTop(i)">
+          <q-rating v-model="data.ratingModel" size="1em" :max="1" color="yellow" class="rating">
+            <template v-slot:tip-1>
+              <q-tooltip>고정!</q-tooltip>
+            </template>
+          </q-rating>
+        </q-btn>
+      </q-card-actions>
+    </q-card>
+  </div>
 </template>

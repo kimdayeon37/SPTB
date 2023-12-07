@@ -28,7 +28,7 @@ const startSimulator = async () => {
     return
   }
   await axios
-    .post('/api/modbus/writer', {
+    .post('http://localhost:4000/writer', {
       networkData: {
         ...props.networkData,
         msgCount: selectedWriters.value.length,
@@ -76,7 +76,8 @@ const typeOptions = [
 const inputedWriterSlaveId = ref<number>()
 const inputedWriterWriteAddress = ref<number>()
 const inputedWriterReadAddress = ref<number>()
-const inputedWriterValue = ref<boolean | number>()
+const inputedWriterBooleanValue = ref<boolean>()
+const inputedWriterNumberValue = ref<number>()
 const inputedWriterValues = ref<(boolean | number)[]>([]) // Write Multiple Coils, Write Multiple Registers
 const inputedWriterByteSwap = ref<boolean>() // Write Single Register
 const inputedWriterWordSwap = ref<boolean>() // Write Single Register
@@ -121,7 +122,7 @@ const addWriter = () => {
     type: inputedWriterType.value,
     writeAddress: inputedWriterWriteAddress.value,
     readAddress: inputedWriterReadAddress.value,
-    value: inputedWriterValue.value,
+    value: inputedWriterType.value === typeOptions[0] ? inputedWriterBooleanValue.value : inputedWriterNumberValue.value,
     values: inputedWriterValues.value,
     invalidFunction: inputedWriterInvalidFucntion.value,
     invalidLength: inputedWriterInvalidLength.value,
@@ -225,11 +226,11 @@ const removeItem = (index: number) => {
             </div>
             <div class="row height">
               <div class="col-6 flex items-center">Value (Boolean)</div>
-              <q-toggle outlined v-model="(inputedWriterValue as boolean)" dense class="col-6" :rules="[(val:any) => !!val || '* Required']" />
+              <q-toggle outlined v-model="inputedWriterBooleanValue" dense class="col-6" :rules="[(val: any) => !!val || '* Required']" />
             </div>
             <div class="row height">
               <div class="col-6 flex items-center">Invalid Function</div>
-              <q-toggle outlined v-model="inputedWriterInvalidFucntion" dense class="col-6" :rules="[(val:any) => !!val || '* Required']" />
+              <q-toggle outlined v-model="inputedWriterInvalidFucntion" dense class="col-6" :rules="[(val: any) => !!val || '* Required']" />
             </div>
           </template>
 
@@ -245,7 +246,7 @@ const removeItem = (index: number) => {
             </div>
             <div class="row height">
               <div class="col-6 flex items-center">Value (UInt16)</div>
-              <q-input outlined v-model="(inputedWriterValue as number)" dense class="col-6" />
+              <q-input outlined v-model="inputedWriterNumberValue" dense class="col-6" />
             </div>
             <div class="row height">
               <div class="col-6 flex items-center">Byte Swap</div>
@@ -291,11 +292,11 @@ const removeItem = (index: number) => {
             </div>
             <div class="row height">
               <div class="col-6 flex items-center">Invalid Function</div>
-              <q-toggle outlined v-model="inputedWriterInvalidFucntion" dense class="col-6" :rules="[(val:any) => !!val || '* Required']" />
+              <q-toggle outlined v-model="inputedWriterInvalidFucntion" dense class="col-6" :rules="[(val: any) => !!val || '* Required']" />
             </div>
             <div class="row height">
               <div class="col-6 flex items-center">Invalid Length</div>
-              <q-toggle outlined v-model="inputedWriterInvalidLength" dense class="col-6" :rules="[(val:any) => !!val || '* Required']" />
+              <q-toggle outlined v-model="inputedWriterInvalidLength" dense class="col-6" :rules="[(val: any) => !!val || '* Required']" />
             </div>
           </template>
 
@@ -341,11 +342,11 @@ const removeItem = (index: number) => {
             </div>
             <div class="row height">
               <div class="col-6 flex items-center">Invalid Function</div>
-              <q-toggle outlined v-model="inputedWriterInvalidFucntion" dense class="col-6" :rules="[(val:any) => !!val || '* Required']" />
+              <q-toggle outlined v-model="inputedWriterInvalidFucntion" dense class="col-6" :rules="[(val: any) => !!val || '* Required']" />
             </div>
             <div class="row height">
               <div class="col-6 flex items-center">Invalid Length</div>
-              <q-toggle outlined v-model="inputedWriterInvalidLength" dense class="col-6" :rules="[(val:any) => !!val || '* Required']" />
+              <q-toggle outlined v-model="inputedWriterInvalidLength" dense class="col-6" :rules="[(val: any) => !!val || '* Required']" />
             </div>
           </template>
 
@@ -359,7 +360,7 @@ const removeItem = (index: number) => {
           <template v-if="inputedWriterType === typeOptions[6]"> </template>
           <div class="row height">
             <div class="col-6 flex items-center">Invalid Checksum</div>
-            <q-toggle outlined v-model="inputedWriterInvalidChecksum" dense class="col-6" :rules="[(val:any) => !!val || '* Required']" />
+            <q-toggle outlined v-model="inputedWriterInvalidChecksum" dense class="col-6" :rules="[(val: any) => !!val || '* Required']" />
           </div>
           <div class="row justify-evenly items-center">
             <q-btn label="추가" type="submit" color="main" padding="xs lg"></q-btn>

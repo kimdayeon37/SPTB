@@ -45,3 +45,60 @@ export type WriterData = {
   orMask?: string
   hexValue?: string
 }
+
+export type OUCNetworkData = {
+  endpointurl: string
+  securitymode?: 'None' | 'Sign' | 'SignAndEncrypt'
+  securitypolicy?: 'None' | 'Basic256' | 'Basic128Rsa15' | 'Basic256Rha256'
+  useridentify?: 'Anonymous' | 'UserName'
+  username: string
+  password?: string
+  certFile?: any
+  keyFile?: any
+  applicationuri?: string
+}
+export type OUCMemoryData = {
+  type?: string
+  nodeId?: string
+  interval?: number
+  queueSize?: number
+  discardOldest?: string
+}
+
+export type ReadWriterData = {
+  name?: string
+  type?: string
+  nodeId?: string
+  invalidmsgtype?: boolean
+  invalidmsglength?: boolean
+  invalidmsgchunk?: boolean
+  inputArguments?: MethodArgumentData[]
+  rawBuffer?: number
+}
+export type MethodArgumentData = {
+  dataType: string
+  size: string
+}
+
+export type OUSNetworkData = {
+  ip?: string
+  port?: number
+  certFile?: any
+  keyFile?: any
+  users?: { id: string; pw: string }[]
+}
+export type ArgumentData = {
+  name: string
+  dataType: string
+}
+
+export type OUSMemoryNodeData = {
+  id?: string
+  label?: string
+  category?: string
+  type?: string
+  accessRight?: string
+  inputArguments?: ArgumentData[]
+  outputArguments?: ArgumentData[]
+  children?: OUSMemoryNodeData[]
+}

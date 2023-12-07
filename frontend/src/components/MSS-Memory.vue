@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import axios from 'axios'
 import { ref, type PropType } from 'vue'
+import axios from 'axios'
 type NetworkData = {
   protocol?: string
   slaveId?: number
@@ -26,14 +26,6 @@ const inputedHoldingRegister = ref<number>()
 const inputedByteSwap = ref<boolean>(false)
 const inputedWordSwap = ref<boolean>(false)
 
-type MemoryType = {
-  coils?: number
-  distreteInputs?: number
-  inputRegisters?: number
-  holdingRegisters?: number
-  byteSwap?: boolean
-  wordSwap?: boolean
-}
 const startSimulator = async () => {
   if (
     !(
@@ -64,7 +56,7 @@ const startSimulator = async () => {
 
   await axios
     .post(
-      '/api/modbus/MSE/start',
+      'http://localhost:4000/MSE/start',
       {
         networkData: props.networkData,
         msgData: memoryData,
