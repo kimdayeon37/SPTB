@@ -8,4 +8,8 @@ export const useStateStore = defineStore('state', () => {
     state,
     isRunning
   }
-})
+}, {
+    persist: {
+      storage: sessionStorage,
+    },
+  })

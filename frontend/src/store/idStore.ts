@@ -6,4 +6,10 @@ export const useIdStore = defineStore('clientId', () => {
   return {
     clientId,
   }
-})
+},
+{
+    persist: {
+      storage: sessionStorage,
+    },
+  }
+)

@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import SystemLog from '../components/System-Log.vue'
 import { useToggleStore } from '../store/modules/settingtoggle'
 import { useUserStore } from '../store/userStore'
 import { useRouter } from 'vue-router'
+import {useSseServerTime} from '@/utils/useSse'
+import { useQuasar } from 'quasar'
+import { refreshProc } from '@/utils/api_auth'
+
+const $q = useQuasar()
 
 const leftDrawerOpen = ref(false)
 const toggleLeftDrawer = () => {
@@ -25,6 +30,28 @@ const logoutUser = () => {
 const isUserLogin = () => {
   return userStore.isLogin()
 }
+
+const { aliveTime } = useSseServerTime()
+
+watch(aliveTime, (newVal) => {
+  if (newVal) {
+    if (newVal <= 10) {
+      $q.dialog({
+        title: `로그인이 ${newVal}초 후 만료됩니다. 연장하시겠습니까?`,
+        message: 'CANCEL을 누르면 로그아웃 됩니다.',
+        cancel: true,
+        persistent: true,
+      })
+        .onOk(async () => {
+          isUserLogin()
+          await refreshProc()
+        })
+        .onCancel(() => {
+          logoutUser()
+        })
+    }
+  }
+})
 </script>
 <template>
   <q-layout view="hHh lpR fFf">
@@ -37,6 +64,7 @@ const isUserLogin = () => {
         </q-toolbar-title>
         <template v-if="isUserLogin()">
           <div class="q-gutter-x-md">
+            <span v-if="aliveTime"> Alive time: {{ aliveTime }}</span>
             <span> {{ userStore.id }} 님 환영합니다!</span>
             <q-btn color="secondary"><a href="javascript:;" @click="logoutUser" style="text-decoration: none; color: white">Logout</a></q-btn>
           </div>

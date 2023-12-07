@@ -1,12 +1,21 @@
+import { jwtDecode } from 'jwt-decode';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+
+interface IPayload {
+  iat: number
+  exp: number
+}
+
 
 export const useUserStore = defineStore('login', () => {
-  const id = ref('');
-  const token = ref('');
+  const id = ref<string>();
+  const token = ref<string>();
+  const decoded = computed(() => (token.value ? jwtDecode<IPayload>(token.value) : undefined))
+
 
   const isLogin = () => {
-    return id.value !== '';
+    return id.value !== undefined;
   }
 
   const setUsername = (newId: string) => {
@@ -26,11 +35,16 @@ export const useUserStore = defineStore('login', () => {
   return {
     id,
     token,
+    decoded,
     isLogin,
     setUsername,
     clearUsername,
     setToken,
   }
 },
-{ persist: true }
+  {
+    persist: {
+      storage: sessionStorage,
+    },
+  }
 );

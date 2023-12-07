@@ -28,14 +28,13 @@
 </template>
   
 <script setup lang="ts">
-import { useQuasar } from 'quasar'
-import { ref } from 'vue'
 import { $axios } from '@/axios/index';
+import LoginState from '@/components/LoginState.vue';
+import { useQuasar } from 'quasar';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from "../store/userStore";
-import { jwtDecode } from 'jwt-decode'
-import LoginState from '@/components/LoginState.vue';
-import { useIdStore } from '@/store/idStore'
+import {setClientId} from '@/utils/api_auth'
 
 const $q = useQuasar()
 const router = useRouter();
@@ -44,19 +43,6 @@ const userStore = useUserStore();
 const id = ref<string>('');
 const pw = ref<string>('');
 
-const logoutUser = () => {
-    userStore.clearUsername();
-    router.push({ path: '/Login' });
-}
-
-const isUserLogin = () => {
-    return userStore.isLogin;
-};
-
-interface IPayload {
-            iat: number
-            exp: number
-        }
 const onSubmit = async () => {
     try {
         const userData = {
@@ -76,110 +62,8 @@ const onSubmit = async () => {
             icon: 'cloud_done',
             message: '로그인 성공'
         })
-        router.push({ path: '/Home' });
-
-        try {
-            const idStore = useIdStore()
-            console.log(idStore.clientId)
-            if (idStore.clientId == ''){
-            const response = await $axios().get('/api/getClientId')
-            const clientId = response.data
-            idStore.clientId = clientId
-            console.log('Client ID set in idStore:', clientId)
-            }
-        } catch (error) {
-            console.error('Error fetching client ID:', error)
-        }
-
-        const decoded = jwtDecode<IPayload>(data.token);
-        if (decoded) {
-            const expirationTime = decoded.exp;
-
-            if (expirationTime) {
-                const expirationDate = new Date(expirationTime * 1000); 
-                const notificationTime = new Date(expirationTime * 1000 - (10 * 1000)); 
-                const currentTime = new Date();
-
-                console.log('Token expiration time:', expirationDate);
-                console.log('Notification time:', notificationTime);
-                console.log('Current time:', currentTime);
-                const secondsUntilExpiration = Math.floor((expirationDate.getTime() - notificationTime.getTime()) / 1000);
-                const showDialog = () => {
-                    
-                    console.log('Seconds until expiration:', secondsUntilExpiration);
-                    $q.dialog({
-                        title: `로그인이 ${secondsUntilExpiration}초 후 만료됩니다. 연장하시겠습니까?`,
-                        message: 'CANCEL을 누르면 로그아웃 됩니다.',
-                        cancel: true,
-                        persistent: true
-                    }).onOk(async () => {
-                        let headers = {
-                            Authorization: 'Bearer ' + userStore.token,
-                            'Content-Type': 'application/json',
-                        }
-                        isUserLogin();
-                        console.log(userStore.token)
-                        const axiosResponse = await $axios().post("/api/regenToken", { id: userStore.id }, { headers });
-                        const regenToken = axiosResponse.data.token;
-                        console.log(regenToken)
-                        userStore.setToken(regenToken);
-                        setTimeout(showDialog, expirationDate.getTime() - currentTime.getTime());
-                    }).onCancel(() => {
-                        logoutUser();
-                    }).onDismiss(() => {
-                    })
-                }
-                setTimeout(showDialog, expirationDate.getTime() - currentTime.getTime());
-            } else {
-                console.error('Token does not contain an expiration time (exp).');
-            }
-        } else {
-            console.error('Failed to decode the token.');
-        }
-
-        // if (decoded) {
-        //     const expiredMs = decoded.exp * 1000
-
-        //     if (expiredMs) {
-        //         //const expiredDt = new Date(expiredMs);
-        //         // const currentDt = new Date();
-        //         // const currentMs = currentDt.valueOf()
-        //         const currentMs = Date.now();
-        //         console.log(`expiredMs : ${expiredMs}`)
-        //         //console.log(`currentDt : ${currentDt}`)
-        //         console.log(`currentMs : ${currentMs}`)
-        //         const remainingTime = expiredMs - currentMs;
-        //         console.log(`remainingTime : ${remainingTime}`);
-
-        //         setTimeout(() => {
-        //             if (remainingTime <= 14 * 60 * 1000) {
-        //                 console.log('로그인 만료 10초전')
-        //                 console.log(remainingTime)
-        //                 // const response = await axios.post("/api/regenToken", { id: userData.id, headers });
-        //                 // const regenToken = response.data.regenToken;
-        //                 // console.log(regenToken)
-        //                 // userStore.setToken(regenToken);
-        //                 // localStorage.setItem("access_token", regenToken);
-
-        //                 $q.dialog({
-        //                     title: `로그인이 10초 후 만료됩니다. 연장하시겠습니까?`,
-        //                     message: 'CANCEL을 누르면 로그아웃 됩니다.',
-        //                     cancel: true,
-        //                     persistent: true
-        //                 }).onOk(() => {
-        //                     isUserLogin();
-        //                 }).onCancel(() => {
-        //                     logoutUser();
-        //                 }).onDismiss(() => {
-        //                 })
-        //             }
-        //         });
-        //     } else {
-        //         console.error('Token does not contain an expiration time (exp).');
-        //     }
-        // } else {
-        //     console.error('Failed to decode the token.');
-        // }
+        await setClientId()
+        await router.push({ path: '/Home' })
     }
     catch (error) {
         console.log(error);
