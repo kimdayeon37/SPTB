@@ -62,11 +62,12 @@ const setPostRequest = (instance: AxiosInstance) => {
     (e) => {
       if (axios.isAxiosError(e)) {
         const err = e as AxiosError
-
+        router.push({ path: '/Login' })
         console.error(`==================== axios response error, url : ${err.config?.url}`)
         console.error(e as IAxiosErrorLog)
         router.push({ path: '/Login' })
       } else {
+        router.push({ path: '/Login' })
         console.error('==================== response error')
         console.error(e)
         router.push({ path: '/Login' })

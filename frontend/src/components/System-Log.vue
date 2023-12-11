@@ -56,6 +56,7 @@ watch(
     if (clientId.length > 0) {
       const eventSource = new EventSource('/api/sse/system?authorization=Bearer ' + userStore.token + '&clientId=' + clientId) // 서버 SSE 엔드포인트 주소
 
+      // <쓸데없는 버블링 주의>  vueuse sse 연결 라이브러리
       eventSource.addEventListener('message', (event) => {
         const data = JSON.parse(event.data)
         logs.value.unshift({

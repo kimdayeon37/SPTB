@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import axios from 'axios'
+import { $axios } from '@/axios/index'
 import type { QTableProps } from 'quasar'
 
 type LogType = {
@@ -57,7 +57,7 @@ const columns: QTableProps['columns'] = [
   },
 ]
 onMounted(() => {
-  axios
+  $axios()
     .get('/api/log')
     .then((response) => {
       const data = response.data.data

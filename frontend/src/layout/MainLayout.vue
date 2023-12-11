@@ -8,8 +8,6 @@ import { useSseServerTime } from '@/utils/useSse'
 import { useQuasar } from 'quasar'
 import { refreshProc } from '@/utils/api_auth'
 
-const $q = useQuasar()
-
 const leftDrawerOpen = ref(false)
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
@@ -22,11 +20,12 @@ toggleStore.toggle()
 
 const router = useRouter()
 const userStore = useUserStore()
+const $q = useQuasar()
+
 const logoutUser = () => {
   userStore.clearUsername()
   router.push({ path: '/Login' })
 }
-
 const isUserLogin = () => {
   return userStore.isLogin()
 }
@@ -76,12 +75,15 @@ watch(aliveTime, (newVal) => {
 
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered class="sidebar" :width="220">
       <q-list>
+        <template v-if="!isUserLogin()">
         <q-item to="/Login" clickable v-ripple>
           <q-item-section avatar>
             <q-icon name="login" />
           </q-item-section>
           <q-item-section> Log In </q-item-section>
         </q-item>
+      </template>
+        <template v-if="isUserLogin()">
         <q-item to="/Home" clickable v-ripple>
           <q-item-section avatar>
             <q-icon name="home" />
@@ -102,6 +104,7 @@ watch(aliveTime, (newVal) => {
           <q-item to="/OPCUA/Client"><q-item-section>Client</q-item-section></q-item>
           <q-item to="/OPCUA/Server"><q-item-section>Server</q-item-section></q-item>
         </q-expansion-item>
+      </template>
       </q-list>
     </q-drawer>
 
