@@ -10,7 +10,11 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
 
-class BearerToken(val value: String) : AbstractAuthenticationToken(AuthorityUtils.NO_AUTHORITIES) {
+class BearerToken(
+    val value: String,
+    val ipAddress: String?,
+    val userAgent: String?
+) : AbstractAuthenticationToken(AuthorityUtils.NO_AUTHORITIES) {
     override fun getCredentials(): Any = value
 
     override fun getPrincipal(): Any = value
@@ -28,7 +32,7 @@ class JwtSupport {
             .setExpiration(Date.from(Instant.now().plus(15, ChronoUnit.MINUTES)))
             .signWith(key)
 
-        return BearerToken(builder.compact())
+        return BearerToken(builder.compact(),"","")
     }
 
     fun getId(token: BearerToken): String {
@@ -43,9 +47,10 @@ class JwtSupport {
     }
 
     fun isExpired(token: BearerToken): Boolean =
-        try{
+        try {
             parser.parseClaimsJws(token.value).body.expiration.before(Date.from(Instant.now()))
+        } catch (_: Exception) {
+            false
         }
-        catch(_:Exception) {false}
 
 }

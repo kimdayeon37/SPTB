@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.naonworks.common.config.jooq.JooqQuery
 import com.naonworks.common.config.rest.RestError
 import com.naonworks.common.config.rest.RestErrorException
-import com.naonworks.common.security.AccountService
-import com.naonworks.common.security.JwtSupport
-import com.naonworks.common.security.OnlyId
-import com.naonworks.common.security.UserIdPw
+import com.naonworks.common.security.*
 import com.naonworks.entity.log.tables.ServerLogTable
 import com.naonworks.entity.log.tables.pojos.ServerLogPojo
 import com.naonworks.entity.users.tables.pojos.AccountsPojo
@@ -24,6 +21,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.jooq.DSLContext
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.http.codec.ServerSentEvent
@@ -47,7 +45,7 @@ class ModbusController(
     private val validator: SmartValidator,
     private val accountService: AccountService,
     private val encoder: PasswordEncoder,
-//    private val users: UserDetailsService,
+    private val hashMapService: HashMapService,
     private val jwtSupport: JwtSupport
 ) {
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -92,23 +90,14 @@ class ModbusController(
         @RequestBody
         body: UserIdPw,
     ): ResponseEntity<Jwt> {
-////        val user = users.findByUsername(body.id).awaitSingleOrNull()
-//        val user = users.loadUserByUsername(body.id)
-//        user?.let {
-//            if (encoder.matches(body.pw, it.password)) {
-//                return ResponseEntity.ok(Jwt(jwtSupport.generate(it.username).value))
-//            }
-//        }
-//        throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
-//        // 토큰 발행
-////        val tokenInfo = accountService.login(body.id, body.pw)
-////        return ResponseEntity.ok(tokenInfo.toString())
-
         // todo: UserDetailsService 는 webflux 에서 사용 x
         val pojo = accountService.findUserByUsername(body.id)
         // ip랑 브라우저 정보 저장 해쉬맵
-        if (pojo != null && encoder.matches(body.pw, pojo.password))
-            return ResponseEntity.ok(Jwt(jwtSupport.generate(pojo.username).value))
+        if (pojo != null && encoder.matches(body.pw, pojo.password)){
+            val ipAddress = exchange.request.remoteAddress?.address?.hostAddress
+            val userAgent = exchange.request.headers.getFirst(HttpHeaders.USER_AGENT)
+            hashMapService.addInfo(body.id, ipAddress.toString(),userAgent.toString())
+            return ResponseEntity.ok(Jwt(jwtSupport.generate(pojo.username).value))}
 
         throw BadCredentialsException("Invalid Credentials")
     }
