@@ -1,6 +1,9 @@
 import type { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import axios from 'axios'
 import { useUserStore } from '@/store/userStore'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 // ====================================================================
 interface IAxiosErrorLog {
@@ -62,9 +65,11 @@ const setPostRequest = (instance: AxiosInstance) => {
 
         console.error(`==================== axios response error, url : ${err.config?.url}`)
         console.error(e as IAxiosErrorLog)
+        router.push({ path: '/Login' })
       } else {
         console.error('==================== response error')
         console.error(e)
+        router.push({ path: '/Login' })
       }
 
       return Promise.reject(e)
