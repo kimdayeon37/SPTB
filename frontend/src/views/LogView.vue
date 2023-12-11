@@ -58,7 +58,7 @@ const columns: QTableProps['columns'] = [
 ]
 onMounted(() => {
   axios
-    .get('http://localhost:8080/api/log')
+    .get('/api/log')
     .then((response) => {
       const data = response.data.data
       for (let i = 0; i < data.length; i++) {

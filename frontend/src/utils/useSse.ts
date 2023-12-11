@@ -3,9 +3,10 @@ import { useEventSource } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
 
 export const useSseServerTime = () => {
-  const { data } = useEventSource('/api/sse/main/server-time')
-
   const $userState = useUserStore()
+
+  const { data } = useEventSource('/api/sse/main/server-time?authorization=Bearer ' + $userState.token )
+
 
   const serverTime = ref<number>()
 
