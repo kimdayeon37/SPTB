@@ -2,6 +2,7 @@ package com.naonworks.common.security
 
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.reactor.mono
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -47,6 +48,7 @@ class JwtAuthenticationManager(
     private val users: ReactiveUserDetailsService,
     private val hashMapService: HashMapService,
 ) : ReactiveAuthenticationManager {
+    private val log = LoggerFactory.getLogger(this::class.java)
     override fun authenticate(authentication: Authentication?): Mono<Authentication> = mono {
         authentication ?: return@mono null
 
@@ -57,6 +59,7 @@ class JwtAuthenticationManager(
         // ip 랑 useragent 로그인 시점 만들어진것과 비교
         val username = jwtSupport.getId(authentication)
         val userInfo = hashMapService.getInfo(username)
+        log.info("[보안 접근 요청자 정보] ipAddress : ${authentication.ipAddress} userAgent : ${authentication.userAgent}")
         userInfo?.let {
             if (userInfo.ip != authentication.ipAddress || userInfo.userAgent != authentication.userAgent) return@mono null
         } ?: run { return@mono null }

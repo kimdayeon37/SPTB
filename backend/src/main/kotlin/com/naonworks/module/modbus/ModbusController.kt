@@ -97,6 +97,7 @@ class ModbusController(
             val ipAddress = exchange.request.remoteAddress?.address?.hostAddress
             val userAgent = exchange.request.headers.getFirst(HttpHeaders.USER_AGENT)
             hashMapService.addInfo(body.id, ipAddress.toString(),userAgent.toString())
+            log.info("[로그인 정보] ipAddress : $ipAddress userAgent : $userAgent")
             return ResponseEntity.ok(Jwt(jwtSupport.generate(pojo.username).value))}
 
         throw BadCredentialsException("Invalid Credentials")
