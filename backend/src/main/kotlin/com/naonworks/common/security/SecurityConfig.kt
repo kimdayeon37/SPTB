@@ -47,7 +47,7 @@ class SecurityConfig {
                             .pathMatchers("/api/sse/**")
                             .authenticated()
                             .anyExchange()
-                            .authenticated()
+                            .permitAll()
                 }
                 .addFilterAt(filter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .csrf { it.disable() }
