@@ -8,7 +8,7 @@ import MSEView from '../views/ModbusSlaveEthernetView.vue'
 import OCView from '../views/OPCUAClientView.vue'
 import OSView from '../views/OPCUAServerView.vue'
 import SignupView from '../views/SignupView.vue'
-
+import SettingView from '../views/SettingView.vue'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -55,6 +55,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/Log',
         component: LogView,
+      },
+      {
+        path: '/Setting',
+        component: SettingView,
       },
     ],
   },
