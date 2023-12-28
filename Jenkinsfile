@@ -2,15 +2,20 @@ pipeline {
     agent any
 
     stages {
-        stage('make jar') {
+        stage('Initialize Gradle Wrapper') {
             steps {
                 script {
-                    // /backend 폴더로 이동
                     dir('./backend') {
-                        // Gradle Wrapper에 실행 권한 추가
-                        sh 'chmod +x ./gradlew'
-                        
-                        // Gradle Wrapper를 사용하여 bootJar 실행
+                        sh './gradlew wrapper --gradle-version 7.3'
+                    }
+                }
+            }
+        }
+
+        stage('Make Jar') {
+            steps {
+                script {
+                    dir('./backend') {
                         sh './gradlew bootJar'
                     }
                 }
@@ -22,11 +27,9 @@ pipeline {
 
     post {
         success {
-            // 빌드 성공 시 추가 작업 수행 가능
             echo 'Backend build successful!'
         }
         failure {
-            // 빌드 실패 시 추가 작업 수행 가능
             echo 'Backend build failed!'
         }
     }
