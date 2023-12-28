@@ -1,3 +1,4 @@
+import { $axios } from '@/axios'
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
 import { useStateStore } from '@/store/stateStore'
 import { useUserStore } from '@/store/userStore'
@@ -14,6 +15,23 @@ export const simulatorHandler = async () => {
   }
 
   return true
+}
+
+export const blockedIpHandler = async (_to: RouteLocationNormalized, _from: RouteLocationNormalized, next: NavigationGuardNext) => {
+  try {
+    const response = await $axios().get('/api/checkIp')
+    if (response.data.result) {
+      return true
+    } else {
+      next('/Blocked')
+      return false
+    }
+  } catch (error) {
+    console.error('Error checking IP : ', error)
+    next('/Blocked')
+    // 수정해야됨 false로
+    return false
+  }
 }
 
 export const loginExistHandler = async (_to: RouteLocationNormalized, _from: RouteLocationNormalized, next: NavigationGuardNext) => {

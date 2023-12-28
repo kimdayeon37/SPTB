@@ -9,6 +9,7 @@ import OCView from '../views/OPCUAClientView.vue'
 import OSView from '../views/OPCUAServerView.vue'
 import SignupView from '../views/SignupView.vue'
 import SettingView from '../views/SettingView.vue'
+import BlockedView from '@/views/BlockedView.vue'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -61,6 +62,10 @@ const routes: RouteRecordRaw[] = [
         component: SettingView,
       },
     ],
+  },
+  {
+    path: '/Blocked',
+    component: BlockedView,
   },
 ]
 

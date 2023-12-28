@@ -54,7 +54,7 @@ const addIp = async () => {
 
 const getIpList = async () => {
   try {
-    const response = await $axios().get('/api/iplist')
+    const response = await $axios().get('/api/getIps')
     active.value = response.data.active
     filtedIpList.value = [...response.data.result]
   } catch (error) {
