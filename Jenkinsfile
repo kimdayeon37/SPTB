@@ -2,6 +2,14 @@ pipeline {
     agent any
 
     stages {
+        stage('Check Permissions') {
+            steps {
+                script {
+                    sh 'ls -la'
+                }
+            }
+        }
+
         stage('Build Backend') {
             steps {
                 script {
