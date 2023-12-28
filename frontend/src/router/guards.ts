@@ -18,6 +18,7 @@ export const simulatorHandler = async () => {
 }
 
 export const blockedIpHandler = async (_to: RouteLocationNormalized, _from: RouteLocationNormalized, next: NavigationGuardNext) => {
+  return true // 임시 통과
   try {
     const response = await $axios().get('/api/checkIp')
     if (response.data.result) {
