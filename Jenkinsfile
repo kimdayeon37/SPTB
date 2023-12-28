@@ -2,20 +2,18 @@ pipeline {
     agent any
 
     stages {
-        stage('Check Permissions') {
+        stage('Debug') {
             steps {
                 script {
+                    echo 'Current directory contents:'
                     sh 'ls -la'
-                }
-            }
-        }
 
-        stage('Build Backend') {
-            steps {
-                script {
-                    // /backend 폴더로 이동
+                    echo 'Changing to /backend directory:'
                     dir('/backend') {
-                        // Gradle 빌드 명령어 실행
+                        echo 'Contents of /backend directory:'
+                        sh 'ls -la'
+
+                        echo 'Running Gradle build:'
                         sh './gradlew build'
                     }
                 }
