@@ -2,6 +2,7 @@ package com.naonworks.common.security
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
@@ -29,31 +30,30 @@ class SecurityConfig {
                 // 규칙을 설정합니다. 예를 들어, 인증, 권한, 경로별 규칙 등을 정의할 수 있습니다.
                 .authorizeExchange { exchanges ->
                     exchanges
-                            .pathMatchers("/api/login")
+                            .pathMatchers(HttpMethod.POST,"/api/login")
                             .permitAll() // 모든 사용자에게 허용
-                            .pathMatchers("/api/signup")
+                            .pathMatchers(HttpMethod.POST,"/api/signup")
                             .permitAll() // 모든 사용자에게 허용
-                            .pathMatchers("/api/deleteUser")
+                            .pathMatchers(HttpMethod.POST,"/api/deleteUser")
                             .permitAll() // 모든 사용자에게 허용
-                            .pathMatchers("/api/getAllUsers")
+                            .pathMatchers(HttpMethod.GET,"/api/getAllUsers")
                             .permitAll()
-                            .pathMatchers("/api/test")
+                            .pathMatchers(HttpMethod.GET,"/api/test")
                             .authenticated()
-                            .pathMatchers("/api/regenToken")
+                            .pathMatchers(HttpMethod.POST,"/api/regenToken")
                             .authenticated()
-                            // .pathMatchers("/Login").permitAll() // 모든 사용자에게 허용
-                            //                    .pathMatchers("/api/**").authenticated() // USER
+                            // .pathMatchers("/api/**").authenticated() // USER
                             // 권한이 있는 사용자만 허용
                             .pathMatchers("/api/sse/**")
-                            .permitAll() // 모든 사용자에게 허용
+                            .authenticated()
                             .anyExchange()
-                            .authenticated() // 다른 모든 엔드포인트에 대해 인증 필요
+                            .permitAll()
                 }
                 .addFilterAt(filter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .csrf { it.disable() }
                 .formLogin { formLogin ->
                     formLogin.disable()
-                    // formLogin.loginPage("/Login")
+//                     formLogin.loginPage("/Login")
                 }
                 .httpBasic { it.disable() } // HTTP 기본 인증 사용 X
 
