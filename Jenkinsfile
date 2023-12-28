@@ -5,13 +5,9 @@ pipeline {
         stage('Build Backend') {
             steps {
                 script {
-                    // /backend 폴더로 이동
+                    // Gradle 빌드 명령어 실행
                     dir('/backend') {
-                        // Gradle 빌드 명령어 실행
                         sh './gradlew build'
-                        // Gradle 빌드 출력 확인
-                        echo 'Gradle build output:'
-                        sh 'cat build/build.log'
                     }
                 }
             }
