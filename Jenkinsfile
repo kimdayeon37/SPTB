@@ -7,8 +7,11 @@ pipeline {
                 script {
                     // /backend 폴더로 이동
                     dir('./backend') {
-                        // Jenkins 사용자로 소유자 변경
-                        sh './gradle bootJar'
+                        // Gradle Wrapper에 실행 권한 추가
+                        sh 'chmod +x ./gradlew'
+                        
+                        // Gradle Wrapper를 사용하여 bootJar 실행
+                        sh './gradlew bootJar'
                     }
                 }
             }
