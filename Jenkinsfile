@@ -2,12 +2,15 @@ pipeline {
     agent any
 
     stages {
-        stage('Build Backend') {
+        stage('Change Permissions') {
             steps {
                 script {
-                    // Gradle 빌드 명령어 실행
+                    // /backend 폴더로 이동
                     dir('/backend') {
-                        sh './gradlew build'
+                        // Jenkins 사용자로 소유자 변경
+                        sh 'sudo chown -R stem:stem .'
+                        // 적절한 권한 부여
+                        sh 'sudo chmod -R u+rwX,g+rX,o+rX .'
                     }
                 }
             }
