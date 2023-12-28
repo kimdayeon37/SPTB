@@ -2,15 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Initialize Gradle Wrapper') {
-            steps {
-                script {
-                    dir('./backend') {
-                        sh './gradlew wrapper --gradle-version 7.3'
-                    }
-                }
-            }
-        }
+        
 
         stage('Make Jar') {
             steps {
