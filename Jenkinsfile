@@ -6,7 +6,7 @@ pipeline {
             steps {
                 script {
                     // /backend 폴더로 이동
-                    dir('/backend') {
+                    dir('./backend') {
                         // Jenkins 사용자로 소유자 변경
                         sh 'sudo chown -R stem:stem .'
                         // 적절한 권한 부여
