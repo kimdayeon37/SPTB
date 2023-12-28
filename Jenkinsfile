@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Change Permissions!!') {
+        stage('Change Permissions!') {
             steps {
                 script {
                     // /backend 폴더로 이동
