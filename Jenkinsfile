@@ -16,7 +16,7 @@ pipeline {
 
                         // Copy the jar file to init.d directory (modify the path accordingly)
                         sh "sudo cp ${jarFilePath} /etc/init.d/sptb"
-
+                        sh "sudo systemctl daemon-reload"
                         // Restart the service (modify the service name accordingly)
                         sh "sudo service sptb restart"
                     }
