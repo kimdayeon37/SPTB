@@ -45,7 +45,7 @@ watch(aliveTime, (newVal) => {
         .onOk(async () => {
           isUserLogin()
           await refreshProc()
-           isShowExpiredDialog.value = false
+          isShowExpiredDialog.value = false
         })
         .onCancel(() => {
           logoutUser()
@@ -76,41 +76,41 @@ watch(aliveTime, (newVal) => {
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered class="sidebar" :width="220">
       <q-list>
         <template v-if="!isUserLogin()">
-        <q-item to="/Login" clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon name="login" />
-          </q-item-section>
-          <q-item-section> Log In </q-item-section>
-        </q-item>
-      </template>
+          <q-item to="/Login" clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="login" />
+            </q-item-section>
+            <q-item-section> Log In </q-item-section>
+          </q-item>
+        </template>
         <template v-if="isUserLogin()">
-        <q-item to="/Home" clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon name="home" />
-          </q-item-section>
-          <q-item-section> Home </q-item-section>
-        </q-item>
-        <q-item to="/Log" clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon name="search" />
-          </q-item-section>
-          <q-item-section> Log Search </q-item-section>
-        </q-item>
-        <q-item to="/Setting" clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon name="settings" />
-          </q-item-section>
-          <q-item-section> Setting </q-item-section>
-        </q-item>
-        <q-expansion-item expand-separator label="Modbus" default-opened :content-inset-level="0.5">
-          <q-item to="/Modbus/MasterEthernet"><q-item-section @click="toggleStore.toggle()">Master Ethernet</q-item-section></q-item>
-          <q-item to="/Modbus/SlaveEthernet"><q-item-section @click="toggleStore.toggle()">Slave Ethernet</q-item-section></q-item>
-        </q-expansion-item>
-        <q-expansion-item :content-inset-level="0.5" expand-separator label="OPC-UA" default-opened>
-          <q-item to="/OPCUA/Client"><q-item-section>Client</q-item-section></q-item>
-          <q-item to="/OPCUA/Server"><q-item-section>Server</q-item-section></q-item>
-        </q-expansion-item>
-      </template>
+          <q-item to="/Home" clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="home" />
+            </q-item-section>
+            <q-item-section> Home </q-item-section>
+          </q-item>
+          <q-item to="/Log" clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="search" />
+            </q-item-section>
+            <q-item-section> Log Search </q-item-section>
+          </q-item>
+          <q-item to="/Setting" clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="settings" />
+            </q-item-section>
+            <q-item-section> Setting! </q-item-section>
+          </q-item>
+          <q-expansion-item expand-separator label="Modbus" default-opened :content-inset-level="0.5">
+            <q-item to="/Modbus/MasterEthernet"><q-item-section @click="toggleStore.toggle()">Master Ethernet</q-item-section></q-item>
+            <q-item to="/Modbus/SlaveEthernet"><q-item-section @click="toggleStore.toggle()">Slave Ethernet</q-item-section></q-item>
+          </q-expansion-item>
+          <q-expansion-item :content-inset-level="0.5" expand-separator label="OPC-UA" default-opened>
+            <q-item to="/OPCUA/Client"><q-item-section>Client</q-item-section></q-item>
+            <q-item to="/OPCUA/Server"><q-item-section>Server</q-item-section></q-item>
+          </q-expansion-item>
+        </template>
       </q-list>
     </q-drawer>
 
