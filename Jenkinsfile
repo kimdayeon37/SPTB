@@ -5,9 +5,9 @@ pipeline {
         stage('Make Jar') {
             steps {
                 script {
-                    dir('./backend') {
+                    dir('.//home/angrymusic/.jenkins/workspace/sptb_master/backend') {
                         sh 'ls -la'
-                        sh './gradlew bootJar'
+                        sh '/home/angrymusic/.jenkins/workspace/sptb_master/backend/gradlew bootJar'
                     }
                 }
             }
