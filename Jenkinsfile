@@ -7,10 +7,9 @@ pipeline {
                 script {
                     dir('./backend') {
                         sh './gradlew bootJar'
-
                         // Assuming your jar file is generated in the 'build/libs' directory
                         def jarFileName = sh(script: "ls -t build/libs/*.jar | head -n 1 | awk -F'/' '{print \$NF}'", returnStdout: true).trim()
-                            def jarFilePath = "build/libs/${jarFileName}"
+                        def jarFilePath = "build/libs/${jarFileName}"
 
                         // Print the generated jar file name for reference
                         echo "Generated JAR file: ${jarFileName}"
