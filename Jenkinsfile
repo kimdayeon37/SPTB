@@ -7,7 +7,7 @@ pipeline {
                 script {
                     // 프로젝트 디렉토리로 이동
                     dir('./backend') {
-                        // Gradle Wrapper를 초기화 (이미 초기화되어 있다면 필요하지 않음)
+                        // Gradle Wrapper 초기화
                         sh './gradlew wrapper --gradle-version 8.3'
 
                         // Gradle Wrapper를 사용하여 bootJar 실행
