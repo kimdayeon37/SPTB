@@ -8,7 +8,7 @@ pipeline {
                     dir('./backend') {
                         dir('./src')
                         sh 'ls -la'
-                        sh '../gradlew bootJar'
+                        sh './../gradlew bootJar'
                     }
                 }
             }
