@@ -8,7 +8,8 @@ pipeline {
             steps {
                 script {
                     dir('./backend') {
-                        sh './gradlew bootJar --offline'
+                        sh 'ls'
+                        sh './gradlew bootJar'
                     }
                 }
             }
