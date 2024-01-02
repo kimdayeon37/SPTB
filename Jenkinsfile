@@ -6,6 +6,7 @@ pipeline {
             steps {
                 script {
                     dir('./backend') {
+                        sh 'ls -al'
                         sh './gradlew build'
                     }
                 }
