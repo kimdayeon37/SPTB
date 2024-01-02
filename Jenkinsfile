@@ -7,14 +7,14 @@ pipeline {
                 script {
                     echo 'Current Directory: ' + pwd()
                     dir('./backend') {
+                        sh 'ls -l' // 디렉토리 내의 파일 목록 출력
                         sh 'chmod +x gradlew'
+                        sh './gradlew --version' // Gradle Wrapper 버전 확인
                         sh './gradlew bootJar'
                     }
                 }
             }
         }
-
-        // 다른 스테이지들을 여기에 추가할 수 있습니다.
     }
 
     post {
