@@ -7,7 +7,6 @@ pipeline {
                 script {
                     dir('./backend') {
                         sh 'ls -la'
-                        sh 'gradle wrapper --gradle-version 8.3'
                         sh './gradlew bootJar'
                     }
                 }
