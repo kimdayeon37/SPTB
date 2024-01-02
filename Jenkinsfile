@@ -7,6 +7,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'angrymusic-sudo', passwordVariable: 'SUDO_PASSWORD', usernameVariable: 'angrymusic')]) {
                     script {
                         dir('./backend') {
+                            sh 'whoami'
                             sh './gradlew bootJar'
 
                             // Assuming your jar file is generated in the 'build/libs' directory
