@@ -5,12 +5,9 @@ pipeline {
         stage('Make Jar') {
             steps {
                 script {
-                    // 프로젝트 디렉토리로 이동
+                    echo 'Current Directory: ' + pwd()
                     dir('./backend') {
-                        // Gradle Wrapper 초기화
-                        sh './gradlew wrapper --gradle-version 8.3'
-
-                        // Gradle Wrapper를 사용하여 bootJar 실행
+                        sh 'ls'
                         sh './gradlew bootJar'
                     }
                 }
