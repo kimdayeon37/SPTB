@@ -6,7 +6,6 @@ pipeline {
             steps {
                 script {
                     dir('./backend') {
-                        dir('./src')
                         sh 'ls -la'
                         sh './../gradlew bootJar'
                     }
