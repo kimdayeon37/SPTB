@@ -8,7 +8,7 @@ pipeline {
                     echo 'Current Directory: ' + pwd()
                     dir('./backend') {
                         sh 'ls'
-                        sh './gradlew bootJar'
+                        sh '/home/angrymusic/.jenkins/workspace/sptb_master/backend/gradlew bootJar'
                     }
                 }
             }
