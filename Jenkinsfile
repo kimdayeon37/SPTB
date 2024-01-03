@@ -20,7 +20,7 @@ pipeline {
                         // Restart the service (modify the service name accordingly)
                         sh "nohup sudo service sptb restart &"
 
-                        exit 0
+                        
                     }
                 }
             }
