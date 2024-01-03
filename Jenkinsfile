@@ -18,7 +18,7 @@ pipeline {
                         sh "sudo cp ${jarFilePath} /etc/init.d/sptb"
                         sh "sudo systemctl daemon-reload"
                         // Restart the service (modify the service name accordingly)
-                        sh "sudo service sptb restart"
+                        sh "nohup sudo service sptb restart &"
 
                         exit 0
                     }
