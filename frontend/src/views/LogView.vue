@@ -25,7 +25,7 @@ records.value = [
   {
     time: '2023-09-07T02:58:27.355Z',
     type: '시스템',
-    content: '프로그램 시작uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
+    content: '프로그램 시작uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu',
   },
 ]
 
