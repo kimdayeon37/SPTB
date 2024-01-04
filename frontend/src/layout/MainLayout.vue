@@ -100,7 +100,7 @@ watch(aliveTime, (newVal) => {
             <q-item-section avatar>
               <q-icon name="settings" />
             </q-item-section>
-            <q-item-section> Setting </q-item-section>
+            <q-item-section> Setting! </q-item-section>
           </q-item>
           <q-expansion-item expand-separator label="Modbus" default-opened :content-inset-level="0.5">
             <q-item to="/Modbus/MasterEthernet"><q-item-section @click="toggleStore.toggle()">Master Ethernet</q-item-section></q-item>
