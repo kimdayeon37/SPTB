@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `LOG`.`Server_Log`
+ CREATE TABLE IF NOT EXISTS `LOG`.`Server_Log`
 (
     `Time`    TIMESTAMP(6) NULL DEFAULT NULL,
     `Type`    VARCHAR(30)       DEFAULT NULL,
@@ -20,3 +20,8 @@ CREATE TABLE IF NOT EXISTS `USERS`.`Accounts`
     `Role` VARCHAR(30)
 );
 
+ CREATE TABLE IF NOT EXISTS `IPS`.`Whitelistip`
+ (
+     `ip` VARCHAR(15) NOT NULL,
+     `active` BOOLEAN NOT NULL
+);

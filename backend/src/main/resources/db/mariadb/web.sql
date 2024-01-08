@@ -20,3 +20,8 @@ CREATE TABLE IF NOT EXISTS `USERS`.`Accounts`
     `Role` VARCHAR(30)
 );
 
+CREATE TABLE IF NOT EXISTS `IPS`.`Whitelistip`
+(
+    `ip` VARCHAR(15) NOT NULL,
+    `active` BOOLEAN NOT NULL
+);
