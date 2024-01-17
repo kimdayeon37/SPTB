@@ -102,3 +102,16 @@ export type OUSMemoryNodeData = {
   outputArguments?: ArgumentData[]
   children?: OUSMemoryNodeData[]
 }
+
+export type SmtpData = {
+  to?: string
+  subject?: string
+  text?: string
+}
+
+export type SmtpConfig = {
+  host?: string
+  port?: number
+  username?: string
+  password?: string
+}
