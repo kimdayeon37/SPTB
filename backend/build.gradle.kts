@@ -89,7 +89,6 @@ dependencies {
     // jooq r2dbc
     implementation("org.jooq:jooq-kotlin:${project.property("jooqVersion")}")
     implementation("org.jooq:jooq-kotlin-coroutines:${project.property("jooqVersion")}")
-    implementation ("org.springframework.boot:spring-boot-starter-data-jpa");
 
     // kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
