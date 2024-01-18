@@ -17,7 +17,7 @@ const testIpList = ['125.32.123.1', '125.32.123.2', '125.32.123.3', '125.32.124.
 const sendToggleValue = async () => {
   try {
     const response = await $axios().post('/api/ipActive', {
-      active: active,
+      active: active.value,
     })
     if (response.data.result) {
       if (active.value) console.log('활성화 성공')
@@ -86,7 +86,7 @@ onMounted(async () => {
 
     <div class="top col-12 row q-pa-sm">
       <div class="col-2 row items-center justify-center">
-        <q-toggle color="main" v-model="active" :onUpdate="() => sendToggleValue()" />
+        <q-toggle color="main" v-model="active" @update:model-value="() => sendToggleValue()" />
         <q-icon :color="active ? 'positive' : 'negative'" :name="active ? 'verified_user' : 'remove_moderator'" size="sm"></q-icon>
       </div>
 

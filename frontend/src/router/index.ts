@@ -19,7 +19,7 @@ router.beforeEach(async (to, from, next) => {
   if (!to.path.toLowerCase().startsWith('/blocked')) {
     console.log('not blocked page')
     guardArr.push(blockedIpHandler)
-    if (!to.path.toLowerCase().startsWith('/login')) {
+    if (!(to.path.toLowerCase().startsWith('/login') || to.path.toLowerCase().startsWith('/signup'))) {
       guardArr.push(loginExistHandler)
     } else guardArr.push(loginAccecptHandler)
   } else {
