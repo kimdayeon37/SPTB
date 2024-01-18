@@ -46,7 +46,7 @@ class IpFilter(
     }
     fun isIpAllowed(receivingIp: String): Mono<Boolean> {
         return mono {
-            val isIpBlockActive = ipService.ipActive(true)
+            val isIpBlockActive = ipService.getIpActiveResult(true)
             println("Is IP Block Active: $isIpBlockActive")
 
             if (isIpBlockActive) {

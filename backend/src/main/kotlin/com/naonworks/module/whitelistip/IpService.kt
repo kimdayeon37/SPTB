@@ -57,4 +57,8 @@ class IpService @Autowired constructor(
         val result = JooqQuery.execute(query)
         return result.isNotEmpty() && result[0] > 0
     }
+    suspend fun getIpActiveResult(active: Boolean): Boolean {
+        return ipActive(active)
+    }
+
 }
