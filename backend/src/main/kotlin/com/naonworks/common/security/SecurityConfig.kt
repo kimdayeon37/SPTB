@@ -1,5 +1,6 @@
 package com.naonworks.common.security
 
+//import com.naonworks.module.whitelistip.IpService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -14,15 +15,18 @@ import org.springframework.security.web.server.authentication.AuthenticationWebF
 @Configuration
 @EnableWebFluxSecurity
 class SecurityConfig {
-
     @Bean
+//    fun ipFilter(whitelistIpService: IpService): IpFilter {
+//        return IpFilter(whitelistIpService)
+//    }
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
     @Bean
     fun securityFilterChain(
             http: ServerHttpSecurity,
             converter: JwtServerAuthenticationConverter,
-            authManager: JwtAuthenticationManager
+            authManager: JwtAuthenticationManager,
+            ipFilter: IpFilter
     ): SecurityWebFilterChain? {
         val filter = AuthenticationWebFilter(authManager)
         filter.setServerAuthenticationConverter(converter)
@@ -50,6 +54,7 @@ class SecurityConfig {
                             .permitAll()
                 }
                 .addFilterAt(filter, SecurityWebFiltersOrder.AUTHENTICATION)
+                .addFilterAt(ipFilter, SecurityWebFiltersOrder.FIRST) // IP whitelist filter 추가
                 .csrf { it.disable() }
                 .formLogin { formLogin ->
                     formLogin.disable()

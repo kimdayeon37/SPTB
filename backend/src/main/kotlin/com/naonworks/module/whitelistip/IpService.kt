@@ -2,22 +2,20 @@ package com.naonworks.module.whitelistip
 
 import com.naonworks.common.config.jooq.JooqQuery
 import com.naonworks.entity.ips.tables.WhitelistipTable.Whitelistip
-import com.naonworks.entity.ips.tables.pojos.WhitelistipPojo
-import com.naonworks.entity.users.tables.AccountsTable
-import com.naonworks.entity.users.tables.pojos.AccountsPojo
-import com.naonworks.module.modbus.mapstruct.IpWhitelistMapper
-import com.naonworks.module.modbus.mapstruct.UserAccountMapper
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.toList
 import org.jooq.DSLContext
-import org.jooq.impl.DSL
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.web.util.matcher.IpAddressMatcher
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
 @Service
 class IpService @Autowired constructor(
-    private val ctx: DSLContext) {
+    private val ctx: DSLContext,
+    ) {
     suspend fun getIps(): Flow<UserIpDto> {
         val table = Whitelistip
 

@@ -1,5 +1,6 @@
 package com.naonworks.common.config
 
+import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
 import org.springframework.http.codec.ServerCodecConfigurer
@@ -9,6 +10,7 @@ import org.springframework.web.reactive.config.WebFluxConfigurer
 // 성능 최적화 및 불필요한 프록시 생성을 피하기 위해서 사용,
 // 이 설정을 사용하면 구성 클래스에서 반환하는 객체는 항상 새로운 인스턴스가 되며, 다른 빈에서 구성 클래스의 빈을 호출할 때 프록시 객체가 생성되지 않아 성능을 높일 수 있습니다.
 @Configuration(proxyBeanMethods = false)
+@ComponentScan(basePackages = ["com.naonworks.common.security"])
 // WebFluxConfigurer는 Spring WebFlux 프레임워크에서 웹 애플리케이션의 구성을 설정하기 위한 인터페이스이며 웹 애플리케이션의 다양한 측면을 커스터마이징하고 조정할 수 있는 메소드를 제공
 class WebFluxConfig : WebFluxConfigurer {
 

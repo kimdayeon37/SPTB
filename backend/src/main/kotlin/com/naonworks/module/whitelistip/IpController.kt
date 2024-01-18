@@ -1,16 +1,19 @@
 package com.naonworks.module.whitelistip
+import com.naonworks.common.security.IpFilter
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.MissingRequestValueException
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ServerWebExchange
 
 
 @Tag(name = "IP")
 @RestController
 @RequestMapping("/api")
-
-class IpController @Autowired constructor(private val ipService: IpService) {
+class IpController @Autowired constructor(private val ipService: IpService, private val ipFilter: IpFilter) {
     @Operation(summary = "Get IPs")
     @GetMapping("/getIps")
     suspend fun getIps(): Map<String, Any> {
@@ -46,8 +49,16 @@ class IpController @Autowired constructor(private val ipService: IpService) {
         return mapOf("result" to success)
     }
 
-//    @GetMapping("/checkIp")
-//    fun checkIp(): Map<String, Boolean> {
-//        return ipService.checkIp(request)
-//    }
+    @Operation(summary = "Check IP")
+    @GetMapping("/checkIp")
+    suspend fun checkIp(exchange: ServerWebExchange): Map<String, Boolean> {
+        val ipAddress = exchange.request.remoteAddress?.address?.hostName
+            ?: throw MissingRequestValueException("Required query parameter 'ip' is not present.")
+        println("ipAddress: $ipAddress")
+
+
+        val ipAllowed = ipFilter.isIpAllowed(ipAddress).awaitSingle()
+
+        return mapOf("result" to ipAllowed)
+    }
 }
