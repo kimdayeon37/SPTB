@@ -52,7 +52,7 @@ class IpController @Autowired constructor(private val ipService: IpService, priv
     @Operation(summary = "Check IP")
     @GetMapping("/checkIp")
     suspend fun checkIp(exchange: ServerWebExchange): Map<String, Boolean> {
-        val ipAddress = exchange.request.remoteAddress?.address?.hostName
+        val ipAddress = exchange.request.remoteAddress?.address?.hostAddress
             ?: throw MissingRequestValueException("Required query parameter 'ip' is not present.")
         println("ipAddress: $ipAddress")
 
