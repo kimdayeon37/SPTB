@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.web.util.matcher.IpAddressMatcher
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
+import java.lang.RuntimeException
 
 @Service
 class IpService @Autowired constructor(
@@ -57,8 +58,15 @@ class IpService @Autowired constructor(
         val result = JooqQuery.execute(query)
         return result.isNotEmpty() && result[0] > 0
     }
-    suspend fun getIpActiveResult(active: Boolean): Boolean {
-        return ipActive(active)
+    suspend fun getIpActiveResult(): Boolean {
+        val table = Whitelistip
+
+        val query = ctx.select(table.active)
+            .from(table)
+            .limit(1)  // Assuming you only want one result
+
+        val result = JooqQuery.findOne(query) ?: throw RuntimeException("not null")
+        return result.getValue(table.active)
     }
 
 }

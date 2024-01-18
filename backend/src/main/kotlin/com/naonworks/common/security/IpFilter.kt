@@ -46,7 +46,7 @@ class IpFilter(
     }
     fun isIpAllowed(receivingIp: String): Mono<Boolean> {
         return mono {
-            val isIpBlockActive = ipService.getIpActiveResult(true)
+            val isIpBlockActive = ipService.getIpActiveResult()
             println("Is IP Block Active: $isIpBlockActive")
 
             if (isIpBlockActive) {
@@ -54,7 +54,7 @@ class IpFilter(
                 val whitelistIps = ipService.getIps().map { it.ip }.toList()
                 println("Whitelist IPs: $whitelistIps")
 
-                val isAllowed = receivingIp in whitelistIps
+                val isAllowed = whitelistIps.isEmpty() || receivingIp in whitelistIps
                 println("Is IP Allowed: $isAllowed")
 
                 isAllowed
