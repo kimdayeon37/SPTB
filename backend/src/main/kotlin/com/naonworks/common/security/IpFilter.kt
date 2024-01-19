@@ -59,11 +59,10 @@ class IpFilter(
 
                 isAllowed
             } else {
-                // If the IP block is not active, allow all IPs
                 println("IP Block is not active. Allowing all IPs.")
                 true
             }
-        }.onErrorReturn(true) // Ensure that in case of any error, it returns true
+        }.onErrorReturn(true)
     }
 
 }
