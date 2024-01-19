@@ -63,7 +63,7 @@ class IpService @Autowired constructor(
 
         val query = ctx.select(table.active)
             .from(table)
-            .limit(1)  // Assuming you only want one result
+            .limit(1) 
 
         val result = JooqQuery.findOne(query) ?: throw RuntimeException("not null")
         return result.getValue(table.active)
