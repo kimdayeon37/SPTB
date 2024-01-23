@@ -61,7 +61,7 @@ watch(aliveTime, (newVal) => {
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          <div class="q-ml-sm text-bold">Naonworks SPTB</div>
+          <div class="q-ml-sm text-bold">SPTB</div>
         </q-toolbar-title>
         <template v-if="isUserLogin()">
           <div class="q-gutter-x-md">

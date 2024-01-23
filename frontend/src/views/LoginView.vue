@@ -1,7 +1,6 @@
 <template>
     <div class="column items-center">
         <div class="col q-pa-lg">
-            <q-img src="/src/assets/login.png" style="width: 300px; height: 50px;" />
         </div>
     
         <div class="col" v-if="!userStore.isLogin()" style="max-width: 400px; margin-top: -100px;">
