@@ -1,5 +1,6 @@
 # 시나리오 기반 제어 프로토콜 시험환경 구축
 프로젝트 기간 | 2023.09 ~ 2023.11
+
 인원 | FE/BE - 2명, 시스템 - 2명
 
 ## ⚡ 기술스택
@@ -17,36 +18,45 @@
 
 ## 웹 페이지
 1. 로그인 화면 (비로그인 시 사용 불가)
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/03d5e153-2361-4555-be5e-7ae6347830f6/da72264a-615c-4c27-872a-f70c1681d2ee/Untitled.png)
-세션 만료 시 사용자에게 연장 요청
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/03d5e153-2361-4555-be5e-7ae6347830f6/12b96134-4e98-493d-bc34-752a46d42b09/Untitled.png)
+![Untitled](https://github.com/kimdayeon37/SPTB-Scenario-based-control-Protocol-Test-Bed-/assets/93921784/43742dee-3292-4ee3-a9bf-68d0e406b0cf)
+
+- 세션 만료 시 사용자에게 연장 요청
+![Untitled](https://github.com/kimdayeon37/SPTB-Scenario-based-control-Protocol-Test-Bed-/assets/93921784/7e42b982-d0a9-4d27-9cae-e0942eedc4a7)
+
 
 2. 로그인 후 메인페이지
    - 최근 항목 리스트
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/03d5e153-2361-4555-be5e-7ae6347830f6/68d67fe5-5fbd-40b4-bc7a-71da530fc4ca/Untitled.png)
+![Untitled](https://github.com/kimdayeon37/SPTB-Scenario-based-control-Protocol-Test-Bed-/assets/93921784/7883041b-7f33-4524-9af0-79bd362f6acf)
+
 
 3. 로그 데이터 검색 (원하는 기간 설정)
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/03d5e153-2361-4555-be5e-7ae6347830f6/2d0aeddb-d18a-4862-991e-37c45b543170/Untitled.png)
+![Untitled](https://github.com/kimdayeon37/SPTB-Scenario-based-control-Protocol-Test-Bed-/assets/93921784/712798f3-4466-4eed-960e-a26b27e114fa)
+
 
 4. 접근 가능 IP 리스트
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/03d5e153-2361-4555-be5e-7ae6347830f6/a89ed7e1-0940-4e8a-932a-dc447b6e6697/Untitled.png)
+![Untitled](https://github.com/kimdayeon37/SPTB-Scenario-based-control-Protocol-Test-Bed-/assets/93921784/3196ad26-1317-414f-b1c0-c057d43dad5a)
+
 - IP Block Off
     - 페이지 접근 불가 및 Block 처리
     ![image](https://github.com/kimdayeon37/SPTB-Scenario-based-control-Protocol-Test-Bed-/assets/93921784/1a399c99-6eb7-4366-9903-6961b2babcb3)
 
 5. SMTP 메일 전송
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/03d5e153-2361-4555-be5e-7ae6347830f6/0d4ec8fa-79fe-4d8a-8f99-450fa4a846a1/Untitled.png)
+![Untitled](https://github.com/kimdayeon37/SPTB-Scenario-based-control-Protocol-Test-Bed-/assets/93921784/714a8b1f-376c-428a-9e90-d270189affcf)
+
 
 7. 프로토콜 파라미터 설정
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/03d5e153-2361-4555-be5e-7ae6347830f6/f176f33c-ebf9-40cc-b2cf-0637a23ddc06/Untitled.png)
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/03d5e153-2361-4555-be5e-7ae6347830f6/f80c8182-11a2-46e4-9f48-8f84689545fd/Untitled.png)
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/03d5e153-2361-4555-be5e-7ae6347830f6/a20c8c43-d95a-4fd7-91bb-23fd980b6270/Untitled.png)
+![Untitled](https://github.com/kimdayeon37/SPTB-Scenario-based-control-Protocol-Test-Bed-/assets/93921784/96c42215-fe92-4919-b9e4-1dfa1eeb5544)
+![Untitled](https://github.com/kimdayeon37/SPTB-Scenario-based-control-Protocol-Test-Bed-/assets/93921784/077a2285-5528-49da-a6ac-5db542ee041a)
+![Untitled](https://github.com/kimdayeon37/SPTB-Scenario-based-control-Protocol-Test-Bed-/assets/93921784/2dca75fd-2496-4694-8021-f08375c33a53)
+
 - 설정 후 시스템 통신
-  - ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/03d5e153-2361-4555-be5e-7ae6347830f6/fdfe6cdf-fe92-4388-a6f2-a0dd406986b7/Untitled.png)
-- 트리구조
-  - ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/03d5e153-2361-4555-be5e-7ae6347830f6/fa8d4d95-6dd6-4331-ac68-662a0a0d9d73/Untitled.png)
+  - ![Untitled](https://github.com/kimdayeon37/SPTB-Scenario-based-control-Protocol-Test-Bed-/assets/93921784/bc0dca55-6a38-437a-9d8a-6d694fa3010c)
+  - 트리구조
+  - ![Untitled](https://github.com/kimdayeon37/SPTB-Scenario-based-control-Protocol-Test-Bed-/assets/93921784/6bee4ce7-b00d-4642-b1d0-0f605a14b804)
+
 ## 🗂 프로젝트 구조
 ### FE
+```markdown
 └─📦 src
   ├─📂 axios
   ├─📂 components
@@ -86,8 +96,11 @@
   │  └─📜 useSse
   ├─📜 types.ts
   └─📜 App.vue
+```
+---
 
 ## BE
+```markdown
 C:.
 ├─📂 src
 │  └─📂 main
@@ -130,7 +143,7 @@ C:.
 │      └─📂 resources
 │          └─📂 db
 │  └─📂 test
-
+```
 
 ```sh
 sudo docker run -d \
